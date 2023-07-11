@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 878e96fc8a15146ce83bd36fc1156e43, type: 3}
+  m_Name: QuickSlash
+  m_EditorClassIdentifier: 
+  ItemName: Quick Slash
+  ItemWorldImage: {fileID: 21300000, guid: 627ada0a8abed4ab4a620144e3b8d7fa, type: 3}
+  ItemInventoryImage: {fileID: 21300000, guid: 627ada0a8abed4ab4a620144e3b8d7fa, type: 3}
+  ItemInfo: A quick slash from right to left
+  Usable: 0
+  IsWeaponPart: 1
+  ThisItemType: 2
+  effect: {fileID: 3364797645241251674, guid: b7765a248a1e3445d82f436569e14fe0, type: 3}
+  moveVec: {x: 0, y: 10}
+  damage: 10
+  knockback: 0
+  knockup: 0
+  stunAmount: 10
+  energyDelta: 10
+  specialEnergyDelta: 0
+  startPos: 1
+  endPos: 0
+  swordStateID: 1

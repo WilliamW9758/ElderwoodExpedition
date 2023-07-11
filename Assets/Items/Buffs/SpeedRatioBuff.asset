@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3114ba7607111441e884358595dc8f12, type: 3}
+  m_Name: SpeedRatioBuff
+  m_EditorClassIdentifier: 
+  description: Increase movement speed by 100%, lasts 5 seconds
+  isTimeBased: 1
+  lifetime: 5
+  stackDuration: 0
+  durationMaxStack: 0
+  effectStack: 0
+  effectMaxStack: 1
+  isDurationStacked: 0
+  isDurationRefreshed: 1
+  canBeCleansed: 1
+  isBuff: 1
+  icon: {fileID: 21300000, guid: fface55f1b36c408cb2bc74242b7401f, type: 3}
+  thisTriggerType: 0
+  speedDeltaRatio: 1
+  speedDeltaFlat: 0

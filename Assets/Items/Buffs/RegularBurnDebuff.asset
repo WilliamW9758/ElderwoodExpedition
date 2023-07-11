@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c7b4c9b354534def8b552bd7969378c, type: 3}
+  m_Name: RegularBurnDebuff
+  m_EditorClassIdentifier: 
+  description: Burns for 3 damage every second for 3 seconds
+  isTimeBased: 1
+  lifetime: 3
+  stackDuration: 0
+  durationMaxStack: 0
+  effectStack: 1
+  effectMaxStack: 10
+  isDurationStacked: 0
+  isDurationRefreshed: 1
+  canBeCleansed: 1
+  isBuff: 0
+  thisTriggerType: 0
+  burnDamage: 3
+  tickRate: 1

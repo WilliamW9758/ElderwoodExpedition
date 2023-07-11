@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3114ba7607111441e884358595dc8f12, type: 3}
+  m_Name: SheathSpeedBuff
+  m_EditorClassIdentifier: 
+  description: Gain 25% movement speed when sword is sheathed
+  isTimeBased: 1
+  lifetime: 0.1
+  stackDuration: 0
+  durationMaxStack: 0
+  effectStack: 0
+  effectMaxStack: 1
+  isDurationStacked: 0
+  isDurationRefreshed: 1
+  canBeCleansed: 0
+  isBuff: 1
+  icon: {fileID: 21300000, guid: e566f86adae3944aa85c23045e05c767, type: 3}
+  thisTriggerType: 0
+  speedDeltaRatio: 0.25
+  speedDeltaFlat: 0
