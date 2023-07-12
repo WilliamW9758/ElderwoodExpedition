@@ -5,11 +5,16 @@ using UnityEngine.EventSystems;
 
 public class InventoryDrop : MonoBehaviour, IDropHandler
 {
+    private InventoryManager im;
+
+    public void Awake()
+    {
+        im = GameObject.FindGameObjectWithTag("InventoryManager").GetComponent<InventoryManager>();
+    }
+
     public void OnDrop(PointerEventData eventData)
     {
         GameObject dropped = eventData.pointerDrag;
-        ItemController item = dropped.GetComponent<ItemController>();
-        item.parentAfterDrag = null;
-        dropped.transform.position = GameObject.FindGameObjectWithTag("Player").transform.position;
+        im.DropItem(dropped);
     }
 }

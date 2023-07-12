@@ -37,6 +37,9 @@ public abstract class Buff : ScriptableObject
         attackKill,
         getHit,
         takeDamage,
+        reload,
+        death,
+
     }
     [ShowIf("isStack")]
     public TriggerType thisTriggerType;

@@ -29,7 +29,11 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerClickHandler
     {
         GameObject dropped = eventData.pointerDrag;
         ItemController item = dropped.GetComponent<ItemController>();
-        if (transform.parent.name == "WeaponGrid" &&
+        Debug.Log(transform.parent.name);
+        Debug.Log(item.thisItem.IsWeaponPart);
+
+        if ((transform.parent.name == "WeaponLeft" ||
+            transform.parent.name == "WeaponRight") &&
             item.thisItem.IsWeaponPart == false)
         {
             return;
@@ -55,7 +59,6 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerClickHandler
         if (eventData.button == PointerEventData.InputButton.Left && Input.GetKey(KeyCode.LeftShift) &&
             hasItem)
         {
-            Debug.Log("Left shift hold");
             if (transform.parent.name == "InventoryGrid")
             {
                 GameObject weaponSlot = inventoryManager.NextAvailableWeaponLeftSlot();
@@ -65,6 +68,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerClickHandler
                     Transform itemToMove = transform.Find("ItemSlot").GetChild(0);
                     if (itemToMove.GetComponent<ItemController>().thisItem.IsWeaponPart)
                     {
+                        hasItem = false;
+                        weaponSlot.GetComponent<InventorySlot>().hasItem = true;
                         itemToMove.GetComponent<ItemController>().parentAfterDrag = weaponSlot.transform.Find("ItemSlot");
                         itemToMove.SetParent(weaponSlot.transform.Find("ItemSlot"));
                         itemToMove.SetAsFirstSibling();
@@ -80,6 +85,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerClickHandler
                 GameObject inventorySlot = inventoryManager.NextAvailableInventorySlot();
                 if (inventorySlot)
                 {
+                    hasItem = false;
+                    inventorySlot.GetComponent<InventorySlot>().hasItem = true;
                     Transform itemToMove = transform.Find("ItemSlot").GetChild(0);
                     itemToMove.GetComponent<ItemController>().parentAfterDrag = inventorySlot.transform.Find("ItemSlot");
                     itemToMove.SetParent(inventorySlot.transform.Find("ItemSlot"));
@@ -90,7 +97,6 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerClickHandler
         else if (eventData.button == PointerEventData.InputButton.Right && Input.GetKey(KeyCode.LeftShift) &&
             hasItem)
         {
-            Debug.Log("Left ctrl hold");
             if (transform.parent.name == "InventoryGrid")
             {
                 GameObject weaponSlot = inventoryManager.NextAvailableWeaponRightSlot();
@@ -100,6 +106,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerClickHandler
                     Transform itemToMove = transform.Find("ItemSlot").GetChild(0);
                     if (itemToMove.GetComponent<ItemController>().thisItem.IsWeaponPart)
                     {
+                        hasItem = false;
+                        weaponSlot.GetComponent<InventorySlot>().hasItem = true;
                         itemToMove.GetComponent<ItemController>().parentAfterDrag = weaponSlot.transform.Find("ItemSlot");
                         itemToMove.SetParent(weaponSlot.transform.Find("ItemSlot"));
                         itemToMove.SetAsFirstSibling();
@@ -115,6 +123,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerClickHandler
                 GameObject inventorySlot = inventoryManager.NextAvailableInventorySlot();
                 if (inventorySlot)
                 {
+                    hasItem = false;
+                    inventorySlot.GetComponent<InventorySlot>().hasItem = true;
                     Transform itemToMove = transform.Find("ItemSlot").GetChild(0);
                     itemToMove.GetComponent<ItemController>().parentAfterDrag = inventorySlot.transform.Find("ItemSlot");
                     itemToMove.SetParent(inventorySlot.transform.Find("ItemSlot"));

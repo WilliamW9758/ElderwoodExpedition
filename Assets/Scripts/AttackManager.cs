@@ -112,10 +112,15 @@ public class AttackManager : MonoBehaviour
     {
         if (collision.tag == "Hurtbox" && collision.transform.parent.tag == "Enemy")
         {
+            float finalDamage = (thisAttack.damage + pc.damageFlatMod) * (1 + pc.damageRatioMod);
+            if (Random.Range(0f, 1f) <= pc.critRate)
+            {
+                finalDamage *= (1 + pc.critDamage);
+            }
+            
             Debug.Log(pc.currentElement);
             bool killed = collision.transform.parent.GetComponent<EnemyController>()
-                .TakeDamage((int)((thisAttack.damage + pc.damageFlatMod) * (1 + pc.damageRatioMod)),
-                thisAttack.stunAmount, pc.currentElement);
+                .TakeDamage((int)finalDamage, thisAttack.stunAmount, pc.currentElement);
             Debug.Log(pc.currentElement);
             pc.TriggerBuff(Buff.TriggerType.attackHit, collision.transform.parent.gameObject);
             if (killed) pc.TriggerBuff(Buff.TriggerType.attackKill, collision.transform.parent.gameObject);

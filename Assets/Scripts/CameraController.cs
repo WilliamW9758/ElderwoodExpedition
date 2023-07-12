@@ -13,11 +13,12 @@ public class CameraController : MonoBehaviour
     private Vector3 mousePos;
 
     public static bool shaking;
+
     // Start is called before the first frame update
     void Start()
     {
         target = GameObject.FindGameObjectWithTag("Player").transform;
-        offset = transform.position - target.position;
+        offset = new Vector3(0,0,-10);
         shaking = false;
     }
 

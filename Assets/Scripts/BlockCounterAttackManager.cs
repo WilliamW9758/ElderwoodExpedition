@@ -40,7 +40,7 @@ public class BlockCounterAttackManager : AttackManager
             {
                 counter = true;
                 anim.SetBool("counter", true);
-                StartCoroutine(EntityController.QuickTimeScale(0.3f, 0.2f));
+                StartCoroutine(GameManager.QuickTimeScale(0.3f, 0.2f));
                 wm.swordAnim.SetInteger("swordState", 2);
             } else
             {

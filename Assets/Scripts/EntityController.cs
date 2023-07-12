@@ -51,7 +51,7 @@ public class EntityController : MonoBehaviour
     }
     public Elements currentElement;
 
-    protected void Start()
+    protected virtual void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         canvas = GameObject.FindGameObjectWithTag("MainCanvas").transform;
@@ -59,7 +59,7 @@ public class EntityController : MonoBehaviour
         health = maxHealth;
     }
 
-    protected void Update()
+    protected virtual void Update()
     {
         if (ghost)
         {
@@ -81,7 +81,7 @@ public class EntityController : MonoBehaviour
         }
     }
 
-    protected void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         rb.velocity = moveVec * speed * (1 + speedMod) + dashVelocity + pushVelocity;
     }
@@ -134,13 +134,13 @@ public class EntityController : MonoBehaviour
         return false;
     }
 
-    protected void OnDeath()
+    protected virtual void OnDeath()
     {
         // for testing
         health = maxHealth;
     }
 
-    public void StartDash(Vector2 dir)
+    public virtual void StartDash(Vector2 dir)
     {
         dashVelocity = dir;
     }
@@ -150,7 +150,7 @@ public class EntityController : MonoBehaviour
         dashVelocity = Vector2.zero;
     }
 
-    public void KnockBack(Vector2 knockVec, float seconds)
+    public virtual void KnockBack(Vector2 knockVec, float seconds)
     {
         IEnumerator KnockBack_Cor(Vector2 knockVec, float seconds)
         {
@@ -209,14 +209,7 @@ public class EntityController : MonoBehaviour
 
     }
 
-    public static IEnumerator QuickTimeScale(float duration, float timeScale)
-    {
-        Time.timeScale = timeScale;
-        yield return new WaitForSecondsRealtime(duration);
-        Time.timeScale = 1f;
-    }
-
-    public virtual void AddBuff(BuffManager buff)
+    public void AddBuff(BuffManager buff)
     {
         if (buff == null)
         {
@@ -251,35 +244,54 @@ public class EntityController : MonoBehaviour
         }
     }
 
-    private void BuffCheckFinish(BuffManager buff)
+    protected void BuffCheckFinish(BuffManager buff)
     {
         if (buff.IsFinished)
         {
-            buffs.Remove(buff.buff);
-            if (buffDisplay != null)
-            {
-                Destroy(buffSlots[buff]);
-                buffSlots.Remove(buff);
-            }
+            RemoveBuff(buff.buff);
         }
     }
 
-    private void UpdateBuffDisplayStats(BuffManager buff)
+    public void RemoveBuff(Buff buff)
+    {
+        BuffManager bm = buffs[buff];
+        if (buffDisplay != null)
+        {
+            Destroy(buffSlots[bm]);
+            buffSlots.Remove(bm);
+        }
+        buffs.Remove(buff);
+        
+    }
+
+    protected void UpdateBuffDisplayStats(BuffManager buff)
     {
         if (buffDisplay != null)
         {
             if (buff.buff.isTimeBased)
             {
-                buffSlots[buff].transform.Find("BuffFill").GetComponent<Image>().fillAmount =
+                if (buff.maxDuration > 1000)
+                {
+                    buffSlots[buff].transform.Find("BuffFill").GetComponent<Image>().fillAmount = 0;
+                } else
+                {
+                    buffSlots[buff].transform.Find("BuffFill").GetComponent<Image>().fillAmount =
                     1 - buff.durationSeconds / buff.maxDuration;
+                }
                 buffSlots[buff].transform.Find("BuffStack").GetComponent<TMP_Text>().text =
                     buff.effectStacks.ToString();
             }
             else
             {
                 buffSlots[buff].transform.Find("BuffFill").GetComponent<Image>().fillAmount = 0;
-                buffSlots[buff].transform.Find("BuffStack").GetComponent<TMP_Text>().text =
-                    buff.durationStacks.ToString();
+                if (buff.durationStacks == 0)
+                {
+                    buffSlots[buff].transform.Find("BuffStack").GetComponent<TMP_Text>().text = "";
+                } else
+                {
+                    buffSlots[buff].transform.Find("BuffStack").GetComponent<TMP_Text>().text =
+                        buff.durationStacks.ToString();
+                }
             }
         }
     }

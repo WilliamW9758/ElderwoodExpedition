@@ -152,7 +152,7 @@ transform.position.y)).normalized;
         }
         //Debug.Log("WeaponPtrLeft: " + weaponPtrLeft + "; Can Attack: " + canAttack + "; State: " + attackState);
         if ((Input.GetButtonDown("Fire1") || Input.GetButtonDown("Fire2")) &&
-            currentPos == SwordPosition.sheathed)
+            currentPos == SwordPosition.sheathed && canAttack)
         {
             DrawSword();
         } else
@@ -172,6 +172,8 @@ transform.position.y)).normalized;
     {
         if (attackState == AttackState.canAttack)
         {
+            pc.animator.SetFloat("mouseX", dir.x);
+            pc.animator.SetFloat("mouseY", dir.y);
             //Debug.Log("Attacking");
             if (side == 0)
             {
@@ -355,6 +357,7 @@ transform.position.y)).normalized;
 
     public void ReloadLeft()
     {
+        pc.TriggerBuff(Buff.TriggerType.reload);
         totalReloadLeft = reloadCDLeft + cumulatedReloadCDLeft;
         reloadTimerLeft = totalReloadLeft;
         inventoryManager.ContentUpdate();
@@ -362,6 +365,7 @@ transform.position.y)).normalized;
 
     public void ReloadRight()
     {
+        pc.TriggerBuff(Buff.TriggerType.reload);
         totalReloadRight = reloadCDRight + cumulatedReloadCDRight;
         reloadTimerRight = totalReloadRight;
         inventoryManager.ContentUpdate();

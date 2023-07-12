@@ -72,6 +72,7 @@ public class WorldGeneration: MonoBehaviour
     public const int WORLD_LENGTH = 16;
 
 
+
     public Vector2 worldSize;
     public int[,] rooms;
     public Vector2 eliteMinMax;

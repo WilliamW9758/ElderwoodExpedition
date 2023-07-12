@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,14 +16,16 @@ public class InventoryManager : MonoBehaviour
     public int WeaponRightSize;
     private int currentWeaponRightCount;
 
+    private GameObject mainCanvas;
     public GameObject slot;
-    public GameObject inventoryGrid;
-    public GameObject weaponLeftGrid;
-    public GameObject weaponRightGrid;
     public GameObject inventoryObject;
-    public GameObject bagBtn;
-    public GameObject leftReload;
-    public GameObject rightReload;
+    private GameObject inventoryBG;
+    private GameObject inventoryGrid;
+    private GameObject weaponLeftGrid;
+    private GameObject weaponRightGrid;
+    private GameObject bagBtn;
+    private GameObject leftReload;
+    private GameObject rightReload;
     public TMP_Text weaponPosText;
 
     [SerializeField]
@@ -34,9 +37,20 @@ public class InventoryManager : MonoBehaviour
 
     public GameObject player;
     private WeaponManager wm;
+    private PlayerController pc;
 
     void Awake()
     {
+        mainCanvas = GameObject.FindGameObjectWithTag("MainCanvas");
+        inventoryObject = mainCanvas.transform.Find("Inventory").gameObject;
+        inventoryBG = inventoryObject.transform.Find("InventoryBackground").gameObject;
+        inventoryGrid = inventoryBG.transform.Find("InventoryGrid").gameObject;
+        weaponLeftGrid = mainCanvas.transform.Find("WeaponLeft").gameObject;
+        weaponRightGrid = mainCanvas.transform.Find("WeaponRight").gameObject;
+        bagBtn = mainCanvas.transform.Find("InventoryBtn").gameObject;
+        leftReload = mainCanvas.transform.Find("LeftReload").gameObject;
+        rightReload = mainCanvas.transform.Find("RightReload").gameObject;
+
         for (int i = 0; i < inventorySize; i++)
         {
             Instantiate(slot, inventoryGrid.transform);
@@ -51,6 +65,8 @@ public class InventoryManager : MonoBehaviour
         {
             Instantiate(slot, weaponRightGrid.transform);
         }
+        inventoryBG.GetComponent<RectTransform>().sizeDelta = new Vector2(
+            512, 40 + Mathf.CeilToInt(inventorySize / 7) * 64);
         inventory = new GameObject[inventorySize];
         weaponLeft = new GameObject[WeaponLeftSize];
         weaponRight = new GameObject[WeaponRightSize];
@@ -64,6 +80,7 @@ public class InventoryManager : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         wm = player.GetComponent<WeaponManager>();
+        pc = player.GetComponent<PlayerController>();
     }
 
     void Update()
@@ -125,6 +142,7 @@ public class InventoryManager : MonoBehaviour
                     break;
                 }
             }
+            ContentUpdate();
             return true;
         }
         else if (itemObject.GetComponent<ItemController>().thisItem.IsWeaponPart
@@ -142,6 +160,7 @@ public class InventoryManager : MonoBehaviour
                     break;
                 }
             }
+            ContentUpdate();
             return true;
         }
         else if (itemObject.GetComponent<ItemController>().thisItem.IsWeaponPart
@@ -159,10 +178,12 @@ public class InventoryManager : MonoBehaviour
                     break;
                 }
             }
+            ContentUpdate();
             return true;
         }
         else
         {
+            ContentUpdate();
             return false;
         }
     }
@@ -211,9 +232,11 @@ public class InventoryManager : MonoBehaviour
         }
         for (int i = 0; i < inventorySize; i++)
         {
+            Debug.Log("Inventory " + i + " has item: " + inventoryGrid.transform.GetChild(i).GetComponent<InventorySlot>().hasItem);
             if (inventoryGrid.transform.GetChild(i).GetComponent<InventorySlot>().hasItem)
             {
                 tempBagCount++;
+                Debug.Log(i);
                 tempInventory[i] = inventoryGrid.transform.GetChild(i).Find("ItemSlot").GetChild(0).gameObject;
                 if (tempInventory[i].GetComponent<ItemController>().thisItem.ThisItemType == Item.ItemType.relic)
                 {
@@ -258,6 +281,8 @@ public class InventoryManager : MonoBehaviour
         int j = 0;
         for (int i = 0; i < WeaponLeftSize; i++)
         {
+            Debug.Log("weaponLeftGrid " + i + " has item: " + weaponLeftGrid.transform.GetChild(i).GetComponent<InventorySlot>().hasItem);
+
             if (weaponLeftGrid.transform.GetChild(i).GetComponent<InventorySlot>().hasItem)
             {
                 if (j == wm.weaponPtrLeft && !wm.reloadingLeft)
@@ -307,6 +332,8 @@ public class InventoryManager : MonoBehaviour
         j = 0;
         for (int i = 0; i < WeaponRightSize; i++)
         {
+            Debug.Log("weaponRightGrid " + i + " has item: " + weaponRightGrid.transform.GetChild(i).GetComponent<InventorySlot>().hasItem);
+
             if (weaponRightGrid.transform.GetChild(i).GetComponent<InventorySlot>().hasItem)
             {
                 if (j == wm.weaponPtrRight && !wm.reloadingRight)
@@ -425,9 +452,17 @@ public class InventoryManager : MonoBehaviour
         ContentUpdate();
     }
 
-    private void DropItem(GameObject item)
+    public void DropItem(GameObject item)
     {
-        item.GetComponent<ItemController>().parentAfterDrag = null;
+        ItemController ic = item.GetComponent<ItemController>();
+        if (ic.thisItem.ThisItemType == Item.ItemType.relic)
+        {
+            foreach (Buff buff in ((Relic)ic.thisItem).buffsApplied)
+            {
+                pc.RemoveBuff(buff);
+            }
+        }
+        ic.parentAfterDrag = null;
         item.transform.SetParent(null);
         item.transform.position = player.transform.position;
     }

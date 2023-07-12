@@ -55,4 +55,9 @@ public class EnemyController : EntityController
         stunCount = stunAmount;
         breakFill.fillAmount = stunCount / stunAmount;
     }
+
+    protected override void OnDeath()
+    {
+        Destroy(gameObject);
+    }
 }
