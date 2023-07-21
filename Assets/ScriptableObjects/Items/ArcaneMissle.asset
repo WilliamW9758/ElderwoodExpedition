@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f6c6b00854e417aa10ee23ebca7e79, type: 3}
+  m_Name: ArcaneMissle
+  m_EditorClassIdentifier: 
+  uiDisplay: {fileID: -6407407995499387161, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
+  description: 
+  data:
+    Name: Arcane Missle
+    Id: 17
+    Type: 2
+    InitialEffects:
+    - effect: 0
+      statusEffect: {fileID: 0}
+      effectPrefab: {fileID: 5599193113999200441, guid: 15e9f4e738e674a6b88789865a1b6f16, type: 3}
+      indicator: {fileID: 0}
+      IsAtSelf: 1
+      attackPercent: 100
+      knockback: 0
+      poiseBreak: 10
+      movement: -1
+      windUpTime: 0.25
+      duration: 0.2
+      windDownTime: 0
+      speedDelta: -1
+      lifetime: 0.2
+      velocity: 0.05
+      destroyOnHit: 1
+      energyDelta: -10
+      triggerNext: 0
+      recastable: 0
+      reloadDeltaCurrentWeapon: 0
+      reloadDeltaOtherWeapon: 0
+      IsFollowUp: 0
+      followUpTrigger: 0
+    FollowUpEffects: []

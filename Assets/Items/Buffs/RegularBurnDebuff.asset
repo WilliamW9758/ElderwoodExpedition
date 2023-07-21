@@ -23,6 +23,7 @@ MonoBehaviour:
   isDurationRefreshed: 1
   canBeCleansed: 1
   isBuff: 0
+  icon: {fileID: 4968300173270398009, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   thisTriggerType: 0
-  burnDamage: 3
+  burnDamage: 1
   tickRate: 1

@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f6c6b00854e417aa10ee23ebca7e79, type: 3}
+  m_Name: Dullblade
+  m_EditorClassIdentifier: 
+  uiDisplay: {fileID: -6447425667752118579, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
+  description: 
+  data:
+    Name: Dull Blade
+    Id: 1
+    Type: 4
+    InitialEffects:
+    - effect: 1
+      statusEffect: {fileID: 11400000, guid: e6c797c0dcc504b14b4c98e9ceecfd35, type: 2}
+      effectPrefab: {fileID: 0}
+      IsAtSelf: 0
+      attackPercent: 0
+      knockback: 0
+      poiseBreak: 0
+      movement: 0
+      windUpTime: 0
+      duration: 0
+      windDownTime: 0
+      speedDelta: 0
+      lifetime: 0
+      velocity: 0
+      energyDelta: 0
+      triggerNext: 0
+      reloadDeltaCurrentWeapon: 0
+      reloadDeltaOtherWeapon: 0
+      IsFollowUp: 0
+      followUpTrigger: 0
+    FollowUpEffects: []

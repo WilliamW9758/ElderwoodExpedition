@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbf2028e153e4e4f87a51a45b3c64e8, type: 3}
+  m_Name: TestL
+  m_EditorClassIdentifier: 
+  savePath: 
+  database: {fileID: 11400000, guid: 5e4b95d5226534c57916b91eaa262cbb, type: 2}
+  type: 1
+  Container:
+    inventorySize: 4
+    Slots:
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
+      selected: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
+      selected: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
+      selected: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
+      selected: 0
+  InvenotryAllowedItems: 

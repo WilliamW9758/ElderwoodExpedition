@@ -22,5 +22,11 @@ namespace NaughtyAttributes
         {
             Inverted = false;
         }
+
+        public ShowIfAttribute(string enumName, object enumValue, bool test)
+            : base(enumName, enumValue as Enum)
+        {
+            Inverted = test;
+        }
     }
 }

@@ -3,41 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Events;
 
 public class PlayerController : EntityController
 {
-    public float maxEnergy;
-    public float energy;
-    public float energyRegen;
+    public static UnityAction<InventoryObject> Interact;
+    public static UnityAction<int, int> HealthUpdate;
+    public static UnityAction<float, float> EnergyUpdate;
 
     private float inputX, inputY;
 
-    //public GameObject inventory;
-    private InventoryManager inventoryManager;
-    private bool canPickUp;
-    private bool pickUp;
-    public Animator animator;
+    public InventoryObject inventory;
+    public GameObject itemWorldPrefab;
 
-    public TMP_Text healthText;
-    public Image energyFill;
-
-    public bool controlLock;
-    private Camera mainCamera;
     public Vector2 mouseWorldPosition;
-
-    public Buff SheathSpeedBuff;
 
     // Start is called before the first frame update
     new void Start()
     {
         base.Start();
-        mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        inventoryManager = GameObject
-            .FindGameObjectWithTag("InventoryManager")
-            .GetComponent<InventoryManager>();
-        animator = GetComponent<Animator>();
 
-        energy = maxEnergy;
+        for (int i = 0; i < inventory.GetSize; i++)
+        {
+            inventory.GetSlots[i].ItemDropped += OnItemDropped;
+        }
     }
 
     // Update is called once per frame
@@ -45,110 +34,111 @@ public class PlayerController : EntityController
     {
         base.Update();
 
-        energyFill.fillAmount = energy / maxEnergy;
-
-        mouseWorldPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-
-        if (canPickUp && Input.GetKeyDown(GameManager.PickUp))
+        if (Input.GetKeyDown(KeyCode.Minus))
         {
-            pickUp = true;
+            inventory.Save();
         }
+        if (Input.GetKeyDown(KeyCode.Equals))
+        {
+            inventory.Load();
+        }
+        if (Input.GetKeyDown(GameManager.Interact))
+        {
+            Interact?.Invoke(inventory);
+        }
+
+        switch (currentElement)
+        {
+            case (Elements.physical):
+                GetComponent<SpriteRenderer>().color = Color.white;
+                break;
+            case (Elements.fire):
+                Debug.Log("Showing Fire text");
+                GetComponent<SpriteRenderer>().color = new Color(1, 0.15f, 0.15f);
+                break;
+            case (Elements.ice):
+                GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.94f, 1);
+                break;
+            case (Elements.electric):
+                GetComponent<SpriteRenderer>().color = new Color(0.84f, 0.17f, 0.9f);
+                break;
+            case (Elements.light):
+                GetComponent<SpriteRenderer>().color = new Color(1, 0.9f, 0.4f);
+                break;
+            case (Elements.dark):
+                GetComponent<SpriteRenderer>().color = new Color(0.2f, 0.17f, 0.9f);
+                break;
+        }
+        
 
         if (!controlLock)
         {
             inputX = Input.GetAxisRaw("Horizontal");
             inputY = Input.GetAxisRaw("Vertical");
-            if (inputX != 0 || inputY != 0)
-            {
-                animator.SetBool("isMoving", true);
-                animator.SetFloat("inputX", inputX);
-                animator.SetFloat("inputY", inputY);
-            } else
-            {
-                animator.SetBool("isMoving", false);
-            }
             moveVec = new Vector2(inputX, inputY).normalized;
-        } else
+        }
+        else
         {
             moveVec = Vector2.zero;
         }
 
-        animator.SetFloat("velX", rb.velocity.x);
-        animator.SetFloat("velY", rb.velocity.y);
-        if (rb.velocity.magnitude > 0)
+        if (Input.GetKeyDown(KeyCode.Minus))
         {
-            animator.SetBool("isMoving", true);
-            animator.SetFloat("inputX", rb.velocity.normalized.x);
-            animator.SetFloat("inputY", rb.velocity.normalized.y);
-        } else
+            wc.weaponLeft.Save();
+            wc.weaponRight.Save();
+        }
+        if (Input.GetKeyDown(KeyCode.Equals))
         {
-            animator.SetBool("isMoving", false);
+            wc.weaponLeft.Load();
+            wc.weaponRight.Load();
+        }
+
+        if (Input.GetKeyDown(GameManager.PrimaryAttack)
+            && wc.canAttack
+            && wc.nextItemLeft.Length > 0
+            && !GameManager.IsGamePaused)
+        {
+            if (!wc.AdvanceWeaponLeft())
+                UIManager.SpawnSystemText?.Invoke("Not Enough Energy", Color.white);
+            wc.UpdateLeft();
+            wc.TriggerCurrentItem();
+        }
+        else if (Input.GetKeyDown(GameManager.SecondaryAttack)
+            && wc.canAttack
+            && wc.nextItemRight.Length > 0
+            && !GameManager.IsGamePaused)
+        {
+            if (!wc.AdvanceWeaponRight())
+                UIManager.SpawnSystemText?.Invoke("Not Enough Energy", Color.white);
+            wc.UpdateRight();
+            wc.TriggerCurrentItem();
         }
     }
 
     protected new void FixedUpdate()
     {
-        energy = energy + energyRegen * Time.fixedDeltaTime > maxEnergy ?
-            maxEnergy : energy + energyRegen * Time.fixedDeltaTime;
-
-        if (controlLock)
-        {
-            rb.velocity = dashVelocity + pushVelocity;
-        } else
-        {
-            rb.velocity = moveVec * speed + dashVelocity + pushVelocity;
-        }
         base.FixedUpdate();
     }
 
-    public override bool TakeDamage(int damage, int breakAmount = 0, Elements type = Elements.physical)
+    protected override Quaternion calcTargetRot()
     {
-        bool killed = base.TakeDamage(damage, 0);
-        healthText.text = health + " / " + maxHealth;
+        mouseWorldPosition = GameManager.GetMouseWorldPosition();
+        Vector2 dir = (mouseWorldPosition - new Vector2(transform.position.x, transform.position.y)).normalized;
+        Quaternion dirQ = Quaternion.LookRotation(Vector3.forward, dir);
+        return dirQ;
+    }
+
+    public override bool TakeDamage(int damage, int breakAmount, bool _crit, Elements type = Elements.physical)
+    {
+        bool killed = base.TakeDamage(damage, 0, _crit, type);
+        HealthUpdate?.Invoke(health, maxHealth);
         return killed;
     }
 
-    public bool TestEnergy(float amount)
+    public override void GainEnergy(float amount)
     {
-        if (amount > 0)
-        {
-            return true;
-        }
-        else if(energy + amount >= 0)
-        {
-            energy += amount;
-            return true;
-        } else
-        {
-            ShowFloatingText("Not Enough Energy", Color.white, false);
-            return false;
-        }
-    }
-
-    public void GainEnergy(float amount)
-    {
-        energy = energy + amount > maxEnergy ? maxEnergy : energy + amount;
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.tag == "Item")
-        {
-            canPickUp = true;
-        }
-        if (pickUp && collision.tag == "Item" && inventoryManager.AddItem(collision.gameObject))
-        {
-            pickUp = false;
-            canPickUp = false;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.tag == "Item")
-        {
-            canPickUp = false;
-        }
+        base.GainEnergy(amount);
+        EnergyUpdate?.Invoke(energy, maxEnergy);
     }
 
     protected new IEnumerator TakeDamage_Cor()
@@ -165,5 +155,18 @@ public class PlayerController : EntityController
         invincible = false;
     }
 
-    
+    private void OnItemDropped(InventorySlot _slot)
+    {
+        int id = _slot.item.Id;
+        if (id >= 0)
+        {
+            GameObject itemWorld = Instantiate(itemWorldPrefab, transform.position, Quaternion.identity);
+            itemWorld.GetComponent<ItemWorld>().item = inventory.database.ItemObjects[id];
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        inventory.Clear();
+    }
 }

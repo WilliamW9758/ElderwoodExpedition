@@ -11,15 +11,15 @@ GameObject:
   - component: {fileID: 5772387218583320862}
   - component: {fileID: 5772387218583320857}
   - component: {fileID: 5772387218583320856}
-  - component: {fileID: 5772387218583320859}
-  - component: {fileID: 3357512571195112143}
+  - component: {fileID: 2872313339272680950}
+  - component: {fileID: 5798475907428346160}
   m_Layer: 0
   m_Name: Parry
   m_TagString: Attack
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5772387218583320862
 Transform:
   m_ObjectHideFlags: 0
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 5772387218583320853}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.3448796, y: 1.7351835, z: 0.15703878}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 0adaa6d19f1fb4d26b4cf1468a3d980d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -108,8 +108,8 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!70 &5772387218583320859
-CapsuleCollider2D:
+--- !u!58 &2872313339272680950
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -118,13 +118,13 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.01660383, y: -0.0000015477417}
-  m_Size: {x: 1.0033921, y: 1.0033921}
-  m_Direction: 1
---- !u!114 &3357512571195112143
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5
+--- !u!114 &5798475907428346160
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -133,13 +133,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 5772387218583320853}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3774ded2fbba84e8eb50c8779a8d0293, type: 3}
+  m_Script: {fileID: 11500000, guid: 2fba38f63de0a420abd40b5c5beb6dda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thisAttack: {fileID: 11400000, guid: 0f2c49a21a5934c69822c85d663f48c0, type: 2}
-  player: {fileID: 0}
-  pc: {fileID: 0}
-  wm: {fileID: 0}
-  counter: 0
-  counterEnbable: 0
-  anim: {fileID: 0}
+  attachedFollowUpEffects: []
+  attackPercent: 0
+  knockback: 0
+  poiseBreak: 0
+  energyDelta: 0
+  lifetime: 0
+  velocity: {x: 0, y: 0}
+  infusedElement: 0
+  SSAttack: 0
+  SSCR: 0
+  SSCD: 0
+  SSMaxHealth: 0
+  SSHealth: 0
+  attacker: {fileID: 0}

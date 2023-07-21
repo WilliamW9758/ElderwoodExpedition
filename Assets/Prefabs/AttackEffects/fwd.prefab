@@ -12,14 +12,14 @@ GameObject:
   - component: {fileID: 4821116065690207984}
   - component: {fileID: 4821116065690207999}
   - component: {fileID: 4821116065690207998}
-  - component: {fileID: 4821116065690207997}
+  - component: {fileID: 816517223576342523}
   m_Layer: 0
   m_Name: fwd
   m_TagString: Attack
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4821116065690207985
 Transform:
   m_ObjectHideFlags: 0
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 0adaa6d19f1fb4d26b4cf1468a3d980d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -94,8 +94,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -287338685
-  m_SortingLayer: 2
+  m_SortingLayerID: -1478875077
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: bb51dbf9576cd42b7beff2bb32ef3cd2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -136,7 +136,7 @@ PolygonCollider2D:
     - - {x: -0.5253198, y: -0.04285884}
       - {x: -0.036489725, y: 1.6122415}
       - {x: 0.44497728, y: -0.030256271}
---- !u!114 &4821116065690207997
+--- !u!114 &816517223576342523
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -145,10 +145,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 4821116065690207996}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 370c573c0223e423e9343f9a66a8634c, type: 3}
+  m_Script: {fileID: 11500000, guid: 2fba38f63de0a420abd40b5c5beb6dda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thisAttack: {fileID: 11400000, guid: eeb75ce34107d46f69a71d557c52440b, type: 2}
-  player: {fileID: 0}
-  pc: {fileID: 0}
-  wm: {fileID: 0}
+  attachedFollowUpEffects: []
+  attackPercent: 0
+  knockback: 0
+  poiseBreak: 0
+  energyDelta: 0
+  lifetime: 0
+  velocity: {x: 0, y: 0}
+  infusedElement: 0
+  SSAttack: 0
+  SSCR: 0
+  SSCD: 0
+  SSMaxHealth: 0
+  SSHealth: 0
+  attacker: {fileID: 0}

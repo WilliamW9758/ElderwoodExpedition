@@ -52,11 +52,14 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Shadow
+  - name: GroundEffect
     uniqueID: 2064985069
     locked: 0
   - name: Entities
     uniqueID: 4007628611
+    locked: 0
+  - name: Effect
+    uniqueID: 2816092219
     locked: 0
   - name: UI
     uniqueID: 1344121525

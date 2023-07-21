@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5183f2c215f41ff86d225ccf414404, type: 3}
+  m_Name: LightInfuseBuff
+  m_EditorClassIdentifier: 
+  description: Next attack gains light infuse
+  isTimeBased: 0
+  lifetime: 0
+  stackDuration: 1
+  durationMaxStack: 1
+  effectStack: 1
+  effectMaxStack: 1
+  isDurationStacked: 0
+  isDurationRefreshed: 0
+  canBeCleansed: 1
+  isBuff: 1
+  icon: {fileID: -6051306012696016783, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
+  thisTriggerType: 3
+  onHitApplyDebuff: {fileID: 11400000, guid: 18babff67ba1a46bfaa0a1ee0fde80c2, type: 2}
+  elementInfuse: 4

@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9049d4b9a48a64e12b2be9e365adba5b, type: 3}
+  m_Name: DullBlade
+  m_EditorClassIdentifier: 
+  description: Gain 1 damage
+  isTimeBased: 0
+  lifetime: 0
+  stackDuration: 1
+  durationMaxStack: 1
+  effectStack: 1
+  effectMaxStack: 1
+  isDurationStacked: 0
+  isDurationRefreshed: 0
+  canBeCleansed: 0
+  isBuff: 1
+  icon: {fileID: 5000730549932156952, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
+  thisTriggerType: 0
+  speedDeltaRatio: 0
+  speedDeltaFlat: 0
+  maxHealthDelta: 0
+  critRateDelta: 0
+  critDamageDelta: 0
+  damageDeltaFlat: 1
+  damgeDeltaRatio: 0

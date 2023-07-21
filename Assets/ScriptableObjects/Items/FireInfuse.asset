@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f6c6b00854e417aa10ee23ebca7e79, type: 3}
+  m_Name: FireInfuse
+  m_EditorClassIdentifier: 
+  uiDisplay: {fileID: 21300000, guid: f141cb3d3866d4298b6ef254d669e5b9, type: 3}
+  description: 
+  data:
+    Name: Fire Infuse
+    Id: 3
+    Type: 3
+    InitialEffects:
+    - effect: 1
+      statusEffect: {fileID: 11400000, guid: a0b78b067309b44c1863e8bbf8f6d745, type: 2}
+      effectPrefab: {fileID: 0}
+      IsAtSelf: 0
+      attackPercent: 0
+      knockback: 0
+      poiseBreak: 0
+      movement: 0
+      windUpTime: 0
+      duration: 0
+      windDownTime: 0
+      speedDelta: 0
+      lifetime: 0
+      velocity: 0
+      destroyOnHit: 0
+      energyDelta: -5
+      triggerNext: 1
+      recastable: 0
+      reloadDeltaCurrentWeapon: 0
+      reloadDeltaOtherWeapon: 0
+      IsFollowUp: 0
+      followUpTrigger: 0
+    FollowUpEffects: []

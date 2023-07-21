@@ -12,14 +12,14 @@ GameObject:
   - component: {fileID: 3364797645241251672}
   - component: {fileID: 3364797645241251675}
   - component: {fileID: 1471550474}
-  - component: {fileID: 153124247167517432}
+  - component: {fileID: 9111950165072941137}
   m_Layer: 0
   m_Name: r2l
   m_TagString: Attack
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3364797645241251673
 Transform:
   m_ObjectHideFlags: 0
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 0adaa6d19f1fb4d26b4cf1468a3d980d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -94,8 +94,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -287338685
-  m_SortingLayer: 2
+  m_SortingLayerID: -1478875077
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 70590d8b088e6471595bdca076ec1a09, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -124,7 +124,7 @@ CapsuleCollider2D:
   m_Offset: {x: -0.017116547, y: 0.9548061}
   m_Size: {x: 1.4068737, y: 1.70403}
   m_Direction: 0
---- !u!114 &153124247167517432
+--- !u!114 &9111950165072941137
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -133,10 +133,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 3364797645241251674}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 370c573c0223e423e9343f9a66a8634c, type: 3}
+  m_Script: {fileID: 11500000, guid: 2fba38f63de0a420abd40b5c5beb6dda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thisAttack: {fileID: 11400000, guid: 9b9d829be31b44a909bea2a56f8d3f6a, type: 2}
-  player: {fileID: 0}
-  pc: {fileID: 0}
-  wm: {fileID: 0}
+  attachedFollowUpEffects: []
+  attackPercent: 0
+  knockback: 0
+  poiseBreak: 0
+  energyDelta: 0
+  lifetime: 0
+  velocity: {x: 0, y: 0}
+  infusedElement: 0
+  SSAttack: 0
+  SSCR: 0
+  SSCD: 0
+  SSMaxHealth: 0
+  SSHealth: 0
+  attacker: {fileID: 0}

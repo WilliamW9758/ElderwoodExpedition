@@ -22,9 +22,12 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    private static Camera mainCamera;
+
     public static Action LevelComplete;
     public static int currentLevel;
     public static LevelType currentLevelType;
+    public static bool IsGamePaused { get; private set; }
 
     public static List<List<LevelType>> levelPresets = new List<List<LevelType>>();
 
@@ -35,15 +38,17 @@ public class GameManager : MonoBehaviour
     public static KeyCode Right { get; set; }
     public static KeyCode PrimaryAttack { get; set; }
     public static KeyCode SecondaryAttack { get; set; }
-    public static KeyCode DrawSheathSword { get; set; }
+    public static KeyCode MoveItem { get; set; }
     public static KeyCode Inventory { get; set; }
-    public static KeyCode PickUp { get; set; }
+    public static KeyCode Interact { get; set; }
     public static KeyCode Pause { get; set; }
 
     private bool levelCompleted = false;
 
     private void Awake()
     {
+        mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+
         if (Instance != null && Instance != this)
         {
             Destroy(this);
@@ -62,9 +67,9 @@ public class GameManager : MonoBehaviour
         Right = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("BtnRight", "D"));
         PrimaryAttack = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("BtnPrimary", "Mouse0"));
         SecondaryAttack = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("BtnSecondary", "Mouse1"));
-        DrawSheathSword = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("BtnSheath", "LeftShift"));
+        MoveItem = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("BtnMoveItem", "LeftShift"));
         Inventory = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("BtnInventory", "Tab"));
-        PickUp = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("BtnPickUp", "E"));
+        Interact = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("BtnInteract", "E"));
         Pause = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("BtnPause", "Escape"));
 
         currentLevel = 1;
@@ -191,10 +196,31 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public static IEnumerator QuickTimeScale(float duration, float timeScale)
+    public static void QuickTimeScale(float duration, float timeScale)
     {
-        Time.timeScale = timeScale;
-        yield return new WaitForSecondsRealtime(duration);
+        IEnumerator _QuickTimeScale(float duration, float timeScale)
+        {
+            Time.timeScale = timeScale;
+            yield return new WaitForSecondsRealtime(duration);
+            Time.timeScale = 1f;
+        }
+        Instance.StartCoroutine(_QuickTimeScale(duration, timeScale));
+    }
+
+    public static Vector3 GetMouseWorldPosition()
+    {
+        return mainCamera.ScreenToWorldPoint(Input.mousePosition);
+    }
+
+    public static void PauseGame()
+    {
+        IsGamePaused = true;
+        Time.timeScale = 0f;
+    }
+
+    public static void ResumeGame()
+    {
+        IsGamePaused = false;
         Time.timeScale = 1f;
     }
 }

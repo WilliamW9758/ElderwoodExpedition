@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Stats Buff", menuName = "Buffs/New Stats Buff")]
-public class StatsBuff : Buff
+public class StatsBuff : StatusEffectObject
 {
     public float speedDeltaRatio;
     public float speedDeltaFlat;
@@ -13,7 +13,7 @@ public class StatsBuff : Buff
     public int damageDeltaFlat;
     public float damgeDeltaRatio;
 
-    public override BuffManager InitializeBuff(GameObject obj)
+    public override StatusEffectManager InitializeBuff(GameObject obj)
     {
         return new StatsBuffManager(this, obj);
     }

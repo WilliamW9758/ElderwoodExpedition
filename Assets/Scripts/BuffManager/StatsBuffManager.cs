@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StatsBuffManager : BuffManager
+public class StatsBuffManager : StatusEffectManager
 {
     private readonly EntityController controller;
 
-    public StatsBuffManager(Buff buff, GameObject target) : base(buff, target)
+    public StatsBuffManager(StatusEffectObject buff, GameObject target) : base(buff, target)
     {
         controller = target.GetComponent<EntityController>();
     }
@@ -19,8 +19,8 @@ public class StatsBuffManager : BuffManager
         controller.maxHealth += statsBuff.maxHealthDelta;
         controller.critRate += statsBuff.critRateDelta;
         controller.critDamage += statsBuff.critDamageDelta;
-        controller.damageFlatMod += statsBuff.damageDeltaFlat;
-        controller.damageRatioMod += statsBuff.damgeDeltaRatio;
+        controller.attackFlatMod += statsBuff.damageDeltaFlat;
+        controller.attackRatioMod += statsBuff.damgeDeltaRatio;
     }
 
     public override void End()
@@ -32,8 +32,8 @@ public class StatsBuffManager : BuffManager
         controller.maxHealth -= statsBuff.maxHealthDelta * effectStacks;
         controller.critRate -= statsBuff.critRateDelta * effectStacks;
         controller.critDamage -= statsBuff.critDamageDelta * effectStacks;
-        controller.damageFlatMod -= statsBuff.damageDeltaFlat * effectStacks;
-        controller.damageRatioMod -= statsBuff.damgeDeltaRatio * effectStacks;
+        controller.attackFlatMod -= statsBuff.damageDeltaFlat * effectStacks;
+        controller.attackRatioMod -= statsBuff.damgeDeltaRatio * effectStacks;
         effectStacks = 0;
     }
 }

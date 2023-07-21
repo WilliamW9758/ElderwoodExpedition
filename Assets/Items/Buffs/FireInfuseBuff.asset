@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c5183f2c215f41ff86d225ccf414404, type: 3}
   m_Name: FireInfuseBuff
   m_EditorClassIdentifier: 
-  description: Next attack gains 5 damage and is infused with fire, burn enemies
-    hit.
+  description: Next attack is  infused with fire, burn enemies hit.
   isTimeBased: 0
   lifetime: 0
   stackDuration: 1
@@ -25,6 +24,6 @@ MonoBehaviour:
   canBeCleansed: 1
   isBuff: 1
   icon: {fileID: 21300000, guid: f141cb3d3866d4298b6ef254d669e5b9, type: 3}
-  thisTriggerType: 5
-  flatDamageDelta: 5
-  burnDebuff: {fileID: 11400000, guid: 18babff67ba1a46bfaa0a1ee0fde80c2, type: 2}
+  thisTriggerType: 3
+  onHitApplyDebuff: {fileID: 11400000, guid: 18babff67ba1a46bfaa0a1ee0fde80c2, type: 2}
+  elementInfuse: 1

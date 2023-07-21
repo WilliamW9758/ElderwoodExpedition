@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class BasicEnemyAlertManager : MonoBehaviour
 {
-    public GameObject origin;
+    //public GameObject origin;
 
-    private void Awake()
-    {
-        origin = transform.parent.gameObject;
-    }
+    //private void Awake()
+    //{
+    //    origin = transform.parent.gameObject;
+    //}
 
-    public void alertEnd()
-    {
-        origin.GetComponent<BasicEnemyController>().currentState = BasicEnemyController.EnemyStateMachine.chase;
-        Destroy(gameObject);
-    }
+    //public void alertEnd()
+    //{
+    //    origin.GetComponent<BasicEnemyController>().currentState = BasicEnemyController.EnemyStateMachine.chase;
+    //    Destroy(gameObject);
+    //}
 }

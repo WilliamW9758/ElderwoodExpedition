@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f6c6b00854e417aa10ee23ebca7e79, type: 3}
+  m_Name: FallingBlade
+  m_EditorClassIdentifier: 
+  uiDisplay: {fileID: 3967432113722436129, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
+  description: 
+  data:
+    Name: Falling Blade
+    Id: 14
+    Type: 2
+    InitialEffects:
+    - effect: 0
+      statusEffect: {fileID: 0}
+      effectPrefab: {fileID: 6366015182981958700, guid: fe249871450a44669ba1e5c98d174fec, type: 3}
+      indicator: {fileID: 7141278230132290286, guid: 8541bfaae0f4c4f90995fabd290fe0b3, type: 3}
+      IsAtSelf: 0
+      attackPercent: 100
+      knockback: 10
+      poiseBreak: 10
+      movement: 0
+      windUpTime: 1
+      duration: 0.333
+      windDownTime: 0
+      speedDelta: -0.75
+      lifetime: -1
+      velocity: 0
+      destroyOnHit: 0
+      energyDelta: -20
+      triggerNext: 0
+      recastable: 0
+      reloadDeltaCurrentWeapon: 0
+      reloadDeltaOtherWeapon: 0
+      IsFollowUp: 0
+      followUpTrigger: 0
+    FollowUpEffects: []

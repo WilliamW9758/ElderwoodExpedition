@@ -4,18 +4,36 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
+using UnityEngine.Events;
+
+public enum Elements
+{
+    physical,
+    fire,
+    ice,
+    electric,
+    light,
+    dark
+}
 
 public class EntityController : MonoBehaviour
 {
     // stats and effects
     public float speed;
     public float speedMod;
+    public float rotLerpSpeed;
     public int maxHealth;
     public int health;
+    public float maxEnergy;
+    public float energy;
+    public float energyRegen;
+    public float attack;
+    public int attackFlatMod;
+    public float attackRatioMod;
     public float critRate;
     public float critDamage;
-    public int damageFlatMod;
-    public float damageRatioMod;
+
+    public bool controlLock;
     public bool invincible;
     public bool ghost;
     public bool controlImmune;
@@ -31,46 +49,41 @@ public class EntityController : MonoBehaviour
     public Transform canvas;
     public Image healthFill;
     public GameObject floatingTextPrefab;
-    public GameObject systemTextPrefab;
+    public GameObject floatingTextCritPrefab;
 
     public GameObject buffSlotPrefab;
     public GameObject buffDisplay;
-    public Dictionary<BuffManager, GameObject> buffSlots = new Dictionary<BuffManager, GameObject>();
+    public Dictionary<StatusEffectManager, GameObject> buffSlots = new Dictionary<StatusEffectManager, GameObject>();
     public Sprite NoIcon;
 
-    public readonly Dictionary<Buff, BuffManager> buffs = new Dictionary<Buff, BuffManager>();
+    public WeaponController wc;
 
-    public enum Elements
-    {
-        physical,
-        fire,
-        ice,
-        electric,
-        light,
-        dark
-    }
+    public readonly Dictionary<StatusEffectObject, StatusEffectManager> buffs = new Dictionary<StatusEffectObject, StatusEffectManager>();
+
     public Elements currentElement;
 
     protected virtual void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        wc = GetComponent<WeaponController>();
         canvas = GameObject.FindGameObjectWithTag("MainCanvas").transform;
         currentElement = Elements.physical;
         health = maxHealth;
+        energy = maxEnergy;
     }
 
     protected virtual void Update()
     {
         if (ghost)
         {
-            GetComponent<BoxCollider2D>().enabled = false;
+            GetComponent<Collider2D>().enabled = false;
         }
         else
         {
-            GetComponent<BoxCollider2D>().enabled = true;
+            GetComponent<Collider2D>().enabled = true;
         }
 
-        if (Time.timeScale != 0)
+        if (!GameManager.IsGamePaused)
         {
             foreach (var buff in buffs.Values.ToList())
             {
@@ -83,15 +96,38 @@ public class EntityController : MonoBehaviour
 
     protected virtual void FixedUpdate()
     {
-        rb.velocity = moveVec * speed * (1 + speedMod) + dashVelocity + pushVelocity;
+        GainEnergy(energyRegen * Time.fixedDeltaTime);
+
+        rb.freezeRotation = controlLock;
+        rb.angularVelocity = 0f;
+
+        if (controlLock)
+        {
+            rb.velocity = dashVelocity + pushVelocity;
+        } else
+        {
+            rb.velocity = moveVec * speed * (1 + speedMod) + dashVelocity + pushVelocity;
+            rb.rotation = Quaternion.Slerp(transform.rotation, calcTargetRot(), rotLerpSpeed * Time.deltaTime).eulerAngles.z;
+        }
+    }
+
+    protected virtual Quaternion calcTargetRot()
+    {
+        if (moveVec.magnitude == 0)
+        {
+            return transform.rotation;
+        } else
+        {
+            return Quaternion.LookRotation(Vector3.forward, moveVec);
+        }
     }
 
     /**
      * Called when getting hit, return true if killed, false otherwise
      */
-    public virtual bool TakeDamage(int damage, int breakAmount, Elements type = Elements.physical)
+    public virtual bool TakeDamage(int damage, int breakAmount, bool _crit, Elements type = Elements.physical)
     {
-        TriggerBuff(Buff.TriggerType.getHit);
+        TriggerStatusEffect(StatusEffectObject.TriggerType.OnHit, gameObject);
         if (invincible)
         {
             ShowFloatingText("Immune"); // show immune
@@ -101,22 +137,23 @@ public class EntityController : MonoBehaviour
         switch (type)
         {
             case (Elements.physical):
-                ShowFloatingText(damage.ToString(), Color.white);
+                ShowFloatingText(damage.ToString(), Color.white, crit : _crit);
                 break;
             case (Elements.fire):
-                ShowFloatingText(damage.ToString(), new Color(1, 0.15f, 0.15f));
+                Debug.Log("Showing Fire text");
+                ShowFloatingText(damage.ToString(), new Color(1, 0.15f, 0.15f), crit: _crit);
                 break;
             case (Elements.ice):
-                ShowFloatingText(damage.ToString(), new Color(0.5f, 0.94f, 1));
+                ShowFloatingText(damage.ToString(), new Color(0.5f, 0.94f, 1), crit: _crit);
                 break;
             case (Elements.electric):
-                ShowFloatingText(damage.ToString(), new Color(0.84f, 0.17f, 0.9f));
+                ShowFloatingText(damage.ToString(), new Color(0.84f, 0.17f, 0.9f), crit: _crit);
                 break;
             case (Elements.light):
-                ShowFloatingText(damage.ToString(), new Color(1, 0.9f, 0.4f));
+                ShowFloatingText(damage.ToString(), new Color(1, 0.9f, 0.4f), crit: _crit);
                 break;
             case (Elements.dark):
-                ShowFloatingText(damage.ToString(), new Color(0.2f, 0.17f, 0.9f));
+                ShowFloatingText(damage.ToString(), new Color(0.2f, 0.17f, 0.9f), crit : _crit);
                 break;
         }
         //animator.SetTrigger("getHit");
@@ -124,8 +161,8 @@ public class EntityController : MonoBehaviour
         StartCoroutine(Dizzy_Cor(0.1f));
         //StartCoroutine(CameraController.cameraShake(0.05f, damage * 0.02f));
         health -= damage;
-        TriggerBuff(Buff.TriggerType.takeDamage);
-        healthFill.fillAmount = (float)health / maxHealth;
+        TriggerStatusEffect(StatusEffectObject.TriggerType.OnTakeDamage);
+        //healthFill.fillAmount = (float)health / maxHealth;
         if (health < 0)
         {
             OnDeath();
@@ -136,6 +173,7 @@ public class EntityController : MonoBehaviour
 
     protected virtual void OnDeath()
     {
+        TriggerStatusEffect(StatusEffectObject.TriggerType.OnDeath, gameObject);
         // for testing
         health = maxHealth;
     }
@@ -159,6 +197,11 @@ public class EntityController : MonoBehaviour
             pushVelocity = Vector2.zero;
         }
         StartCoroutine(KnockBack_Cor(knockVec, seconds));
+    }
+
+    public virtual void GainEnergy(float amount)
+    {
+        energy = energy + amount > maxEnergy ? maxEnergy : energy + amount;
     }
 
     protected IEnumerator TakeDamage_Cor()
@@ -187,29 +230,27 @@ public class EntityController : MonoBehaviour
         dizzy = false;
     }
 
-    public void ShowFloatingText(string content, Color color = default, bool onEntity = true)
+    public void ShowFloatingText(string content, Color color = default, bool onEntity = true, bool crit = false)
     {
         if (color == default) color = Color.white;
 
         if (onEntity)
         {
-            GameObject message = Instantiate(floatingTextPrefab, transform.position, Quaternion.identity, transform);
+            GameObject message;
+            if (!crit)
+                message = Instantiate(floatingTextPrefab, transform.position, Quaternion.identity);
+            else
+                message = Instantiate(floatingTextCritPrefab, transform.position, Quaternion.identity);
             message.GetComponent<TMP_Text>().color = color;
             message.GetComponent<TMP_Text>().text = content;
         } else
         {
-            //Debug.Log(canvas);
-            //Debug.Log(systemTextPrefab);
-            GameObject message = Instantiate(systemTextPrefab, canvas);
-            //Debug.Log(message);
-            //Debug.Log(message.GetComponentInChildren<TMP_Text>());
-            message.GetComponentInChildren<TMP_Text>().color = color;
-            message.GetComponentInChildren<TMP_Text>().text = content;
+            UIManager.SpawnSystemText?.Invoke(content, color);
         }
 
     }
 
-    public void AddBuff(BuffManager buff)
+    public void AddStatusEffect(StatusEffectManager buff)
     {
         if (buff == null)
         {
@@ -235,7 +276,7 @@ public class EntityController : MonoBehaviour
         }
     }
 
-    public void TriggerBuff(Buff.TriggerType triggerType, GameObject target = null)
+    public void TriggerStatusEffect(StatusEffectObject.TriggerType triggerType, GameObject target = null)
     {
         foreach (var buff in buffs.Values.ToList())
         {
@@ -244,7 +285,7 @@ public class EntityController : MonoBehaviour
         }
     }
 
-    protected void BuffCheckFinish(BuffManager buff)
+    protected void BuffCheckFinish(StatusEffectManager buff)
     {
         if (buff.IsFinished)
         {
@@ -252,9 +293,9 @@ public class EntityController : MonoBehaviour
         }
     }
 
-    public void RemoveBuff(Buff buff)
+    public void RemoveBuff(StatusEffectObject buff)
     {
-        BuffManager bm = buffs[buff];
+        StatusEffectManager bm = buffs[buff];
         if (buffDisplay != null)
         {
             Destroy(buffSlots[bm]);
@@ -264,7 +305,7 @@ public class EntityController : MonoBehaviour
         
     }
 
-    protected void UpdateBuffDisplayStats(BuffManager buff)
+    protected void UpdateBuffDisplayStats(StatusEffectManager buff)
     {
         if (buffDisplay != null)
         {
