@@ -25,7 +25,7 @@ MonoBehaviour:
       indicator: {fileID: 7141278230132290286, guid: 8541bfaae0f4c4f90995fabd290fe0b3, type: 3}
       IsAtSelf: 0
       attackPercent: 100
-      knockback: 10
+      knockback: 0
       poiseBreak: 10
       movement: 0
       windUpTime: 1

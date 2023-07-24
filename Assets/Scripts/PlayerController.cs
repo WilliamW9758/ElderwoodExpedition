@@ -16,7 +16,7 @@ public class PlayerController : EntityController
     public InventoryObject inventory;
     public GameObject itemWorldPrefab;
 
-    public Vector2 mouseWorldPosition;
+    public Vector3 mouseWorldPosition;
 
     // Start is called before the first frame update
     new void Start()
@@ -123,7 +123,7 @@ public class PlayerController : EntityController
     protected override Quaternion calcTargetRot()
     {
         mouseWorldPosition = GameManager.GetMouseWorldPosition();
-        Vector2 dir = (mouseWorldPosition - new Vector2(transform.position.x, transform.position.y)).normalized;
+        Vector2 dir = ((Vector2)mouseWorldPosition - new Vector2(transform.position.x, transform.position.y)).normalized;
         Quaternion dirQ = Quaternion.LookRotation(Vector3.forward, dir);
         return dirQ;
     }

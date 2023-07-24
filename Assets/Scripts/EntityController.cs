@@ -66,7 +66,7 @@ public class EntityController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         wc = GetComponent<WeaponController>();
-        canvas = GameObject.FindGameObjectWithTag("MainCanvas").transform;
+        //canvas = GameObject.FindGameObjectWithTag("MainCanvas").transform;
         currentElement = Elements.physical;
         health = maxHealth;
         energy = maxEnergy;
