@@ -99,6 +99,10 @@ PrefabInstance:
       propertyPath: thisItem
       value: 
       objectReference: {fileID: 11400000, guid: 9b9d829be31b44a909bea2a56f8d3f6a, type: 2}
+    - target: {fileID: 7202498431146383703, guid: 275f6d4ea59094a9db8aa36d1d0cb391, type: 3}
+      propertyPath: item
+      value: 
+      objectReference: {fileID: 11400000, guid: 711f1b8da02d04b6bad4dc8f3a407bb3, type: 2}
     - target: {fileID: 8568357219672015854, guid: 275f6d4ea59094a9db8aa36d1d0cb391, type: 3}
       propertyPath: m_Name
       value: QuickSlash Variant

@@ -14,8 +14,8 @@ public class WeaponController : MonoBehaviour
     public InventoryObject weaponRight;
     public GameObject itemWorldPrefab;
 
-    public int weaponPtrLeft = -1;
-    public int weaponPtrRight = -1;
+    public int weaponPtrLeft;
+    public int weaponPtrRight;
 
     private EntityController ec;
 
@@ -37,14 +37,8 @@ public class WeaponController : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        
-    }
-
-    private void Start()
-    {
         ec = GetComponent<EntityController>();
-        //swordHolder = transform.Find("SwordHolder").gameObject;
-        //swordAnim = swordHolder.GetComponentInChildren<Animator>();
+
         for (int i = 0; i < weaponLeft.GetSize; i++)
         {
             weaponLeft.GetSlots[i].OnAfterUpdate += OnSlotUpdate;
@@ -55,6 +49,8 @@ public class WeaponController : MonoBehaviour
             weaponRight.GetSlots[i].OnAfterUpdate += OnSlotUpdate;
             weaponRight.GetSlots[i].ItemDropped += OnItemDropped;
         }
+
+        OnSlotUpdate(default);
     }
 
     // Update is called once per frame
@@ -67,16 +63,16 @@ public class WeaponController : MonoBehaviour
     {
         //Debug.Log("Weapon OnSlotUpdate");
         if (weaponPtrLeft >= 0)
-            weaponLeft.GetSlots[weaponPtrLeft].UpdateSelected?.Invoke(false);
+            weaponLeft.GetSlots[weaponPtrLeft].UpdateSelected?.Invoke(weaponLeft.GetSlots[weaponPtrLeft], false);
         if (weaponPtrRight >= 0)
-            weaponRight.GetSlots[weaponPtrRight].UpdateSelected?.Invoke(false);
+            weaponRight.GetSlots[weaponPtrRight].UpdateSelected?.Invoke(weaponRight.GetSlots[weaponPtrRight], false);
 
         weaponPtrLeft = weaponLeft.GetFirstNonEmptySlotIndex;
         weaponPtrRight = weaponRight.GetFirstNonEmptySlotIndex;
         if (weaponPtrLeft >= 0)
-            weaponLeft.GetSlots[weaponPtrLeft].UpdateSelected?.Invoke(true);
+            weaponLeft.GetSlots[weaponPtrLeft].UpdateSelected?.Invoke(weaponLeft.GetSlots[weaponPtrLeft], true);
         if (weaponPtrRight >= 0)
-            weaponRight.GetSlots[weaponPtrRight].UpdateSelected?.Invoke(true);
+            weaponRight.GetSlots[weaponPtrRight].UpdateSelected?.Invoke(weaponRight.GetSlots[weaponPtrRight], true);
         reloadOnEffectEndLeft = false;
         reloadOnEffectEndRight = false;
 
@@ -90,8 +86,11 @@ public class WeaponController : MonoBehaviour
     private void OnItemDropped(InventorySlot _slot)
     {
         int id = _slot.item.Id;
-        GameObject itemWorld = Instantiate(itemWorldPrefab, transform.position, Quaternion.identity);
-        itemWorld.GetComponent<ItemWorld>().item = weaponLeft.database.ItemObjects[id];
+        if (id >= 0)
+        {
+            GameObject itemWorld = Instantiate(itemWorldPrefab, transform.position, Quaternion.identity);
+            itemWorld.GetComponent<ItemWorld>().item = weaponLeft.database.ItemObjects[id];
+        }
     }
 
     public void TriggerCurrentItem()
@@ -147,6 +146,11 @@ public class WeaponController : MonoBehaviour
                 if (ie.indicator)
                 {
                     GameObject indicator = Instantiate(ie.indicator, effectLocation, transform.rotation, effectParent);
+                    if (effect.GetComponent<BoxCollider2D>())
+                    {
+                        BoxCollider2D bc = effect.GetComponent<BoxCollider2D>();
+                        indicator.transform.localScale = new Vector3(bc.size.x / 2f, bc.size.y / 2f, 1);
+                    }
                     Animator IndicatorAnim;
                     indicator.TryGetComponent<Animator>(out IndicatorAnim);
                     SpriteRenderer IndicatorSR = indicator.GetComponent<SpriteRenderer>();
@@ -158,8 +162,8 @@ public class WeaponController : MonoBehaviour
                         IndicatorSR.color = new Color(0.7f, 0.13f, 0.13f, 0.5f);
                     }
                     if (IndicatorAnim)
-                        IndicatorAnim.speed = 1f / ie.windUpTime;
-                    Destroy(indicator, ie.windUpTime);
+                        IndicatorAnim.speed = 1f / (ie.windUpTime * (1f - ec.abilityHaste));
+                    Destroy(indicator, ie.windUpTime * (1f - ec.abilityHaste));
                 }
 
 
@@ -169,11 +173,11 @@ public class WeaponController : MonoBehaviour
                     Debug.Log("Follow Up added: " + ief + "; trigger type: " + ief.followUpTrigger);
                 }
 
-                StartCast?.Invoke(ie.windUpTime, item);
+                StartCast?.Invoke(ie.windUpTime * (1f - ec.abilityHaste), item);
 
-                EffectWindUp(effect, ie.windUpTime, transform.rotation * Vector2.up, ie.movement);
-                EffectWindDown(ie.windUpTime + ie.duration);
-                EffectEnd(ie.windUpTime + ie.duration + ie.windDownTime, ie.speedDelta);
+                EffectWindUp(effect, ie.windUpTime * (1f - ec.abilityHaste), transform.rotation * Vector2.up, ie.movement);
+                EffectWindDown(ie.windUpTime * (1f - ec.abilityHaste) + ie.duration);
+                EffectEnd(ie.windUpTime * (1f - ec.abilityHaste) + ie.duration + ie.windDownTime, ie.speedDelta);
             }
         }
         Debug.Log(item.Type);
@@ -221,6 +225,12 @@ public class WeaponController : MonoBehaviour
             if (ie.indicator)
             {
                 GameObject indicator = Instantiate(ie.indicator, effectLocation, transform.rotation, effectParent);
+                Debug.Log(effect.GetComponent<BoxCollider2D>());
+                if (effect.GetComponent<BoxCollider2D>())
+                {
+                    BoxCollider2D bc = effect.GetComponent<BoxCollider2D>();
+                    indicator.transform.localScale = new Vector3(bc.size.x / 2f, bc.size.y / 2f, 1);
+                }
                 Animator IndicatorAnim;
                 indicator.TryGetComponent<Animator>(out IndicatorAnim);
                 SpriteRenderer IndicatorSR = indicator.GetComponent<SpriteRenderer>();
@@ -233,13 +243,13 @@ public class WeaponController : MonoBehaviour
                     IndicatorSR.color = new Color(0.7f, 0.13f, 0.13f, 0.5f);
                 }
                 if (IndicatorAnim)
-                    IndicatorAnim.speed = 1f / ie.windUpTime;
-                Destroy(indicator, ie.windUpTime);
+                    IndicatorAnim.speed = 1f / (ie.windUpTime * (1f - ec.abilityHaste));
+                Destroy(indicator, ie.windUpTime * (1f - ec.abilityHaste));
             }
 
             IEnumerator StartEffect()
             {
-                yield return new WaitForSeconds(ie.windUpTime);
+                yield return new WaitForSeconds(ie.windUpTime * (1f - ec.abilityHaste));
                 effect.SetActive(true);
                 ec.StartDash(transform.rotation * Vector2.up * ie.movement);
                 yield return new WaitForSeconds(ie.duration);
@@ -334,7 +344,7 @@ public class WeaponController : MonoBehaviour
                 for (int i = weaponPtrLeft; i > weaponPtrLeft - currentItem.Length; i--)
                 {
                     Debug.Log("Left Deselect " + i);
-                    weaponLeft.GetSlots[i].UpdateSelected?.Invoke(false);
+                    weaponLeft.GetSlots[i].UpdateSelected?.Invoke(weaponLeft.GetSlots[i], false);
                 }
             }
             return true;
@@ -370,7 +380,7 @@ public class WeaponController : MonoBehaviour
                 {
                     Debug.Log("Right Deselect " + i);
 
-                    weaponRight.GetSlots[i].UpdateSelected?.Invoke(false);
+                    weaponRight.GetSlots[i].UpdateSelected?.Invoke(weaponRight.GetSlots[i], false);
                 }
             }
             return true;
@@ -485,7 +495,7 @@ public class WeaponController : MonoBehaviour
                         nextItemLeft[i] = nextItems[i];
                     }
                     nextItemLeft[nextItemLeft.Length - 1] = weaponLeft.GetSlots[tempLeft].item;
-                    weaponLeft.GetSlots[idx].UpdateSelected?.Invoke(true);
+                    weaponLeft.GetSlots[idx].UpdateSelected?.Invoke(weaponLeft.GetSlots[idx], true);
                     UpdateItemLeft(tempLeft, nextItemLeft);
                     return;
                 }
@@ -494,7 +504,7 @@ public class WeaponController : MonoBehaviour
 
         nextItemLeft = nextItems;
         weaponPtrLeft = idx;
-        weaponLeft.GetSlots[weaponPtrLeft].UpdateSelected?.Invoke(true);
+        weaponLeft.GetSlots[weaponPtrLeft].UpdateSelected?.Invoke(weaponLeft.GetSlots[weaponPtrLeft], true);
     }
 
     private void UpdateItemRight(int idx, Item[] nextItems)
@@ -524,7 +534,7 @@ public class WeaponController : MonoBehaviour
                         nextItemRight[i] = nextItems[i];
                     }
                     nextItemRight[nextItemRight.Length - 1] = weaponRight.GetSlots[tempRight].item;
-                    weaponRight.GetSlots[weaponPtrRight].UpdateSelected?.Invoke(true);
+                    weaponRight.GetSlots[weaponPtrRight].UpdateSelected?.Invoke(weaponRight.GetSlots[weaponPtrRight], true);
                     UpdateItemRight(tempRight, nextItemRight);
                     return;
                 }
@@ -533,12 +543,63 @@ public class WeaponController : MonoBehaviour
 
         nextItemRight = nextItems;
         weaponPtrRight = idx;
-        weaponRight.GetSlots[weaponPtrRight].UpdateSelected?.Invoke(true);
+        weaponRight.GetSlots[weaponPtrRight].UpdateSelected?.Invoke(weaponRight.GetSlots[weaponPtrRight], true);
+    }
+
+    public void DropRandomItem()
+    {
+        int slot = UnityEngine.Random.Range(0, weaponLeft.GetSize + weaponRight.GetSize);
+        if (slot < weaponLeft.GetSize)
+        {
+            OnItemDropped(weaponLeft.GetSlots[slot]);
+        } else
+        {
+            OnItemDropped(weaponRight.GetSlots[slot - weaponLeft.GetSize]);
+        }
+    }
+
+    public void LockAllSlots()
+    {
+        for (int i = 0; i < weaponLeft.GetSize; i++)
+        {
+            weaponLeft.GetSlots[i].SetLocked(true);
+        }
+        for (int i = 0; i < weaponRight.GetSize; i++)
+        {
+            weaponRight.GetSlots[i].SetLocked(true);
+        }
+    }
+
+    public void UnlockAllSlots()
+    {
+        for (int i = 0; i < weaponLeft.GetSize; i++)
+        {
+            weaponLeft.GetSlots[i].SetLocked(false);
+        }
+        for (int i = 0; i < weaponRight.GetSize; i++)
+        {
+            weaponRight.GetSlots[i].SetLocked(false);
+        }
+    }
+
+    private void OnDisable()
+    {
+        for (int i = 0; i < weaponLeft.GetSize; i++)
+        {
+            weaponLeft.GetSlots[i].ItemDropped -= OnItemDropped;
+        }
+        for (int i = 0; i < weaponRight.GetSize; i++)
+        {
+            weaponRight.GetSlots[i].ItemDropped -= OnItemDropped;
+        }
     }
 
     private void OnApplicationQuit()
     {
-        weaponLeft.Clear();
-        weaponRight.Clear();
+        if (gameObject.tag == "Player")
+        {
+            weaponLeft.Clear();
+            weaponRight.Clear();
+        }
     }
 }

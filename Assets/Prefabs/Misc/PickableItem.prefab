@@ -71,7 +71,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1344121525
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: d46556ec6195e43c09d75312c86c2236, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -156,7 +156,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1344121525
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 61dffd8b897264e9d9c1f427f8d98778, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -201,7 +201,6 @@ GameObject:
   - component: {fileID: 1502518758144687301}
   - component: {fileID: 7202498431146383703}
   - component: {fileID: 4411046553197525768}
-  - component: {fileID: 1714184827691083549}
   - component: {fileID: 7834677597108979984}
   m_Layer: 0
   m_Name: PickableItem
@@ -248,19 +247,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8568357219672015854}
   m_CullTransparentMesh: 1
---- !u!114 &1714184827691083549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8568357219672015854}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c3bb5d27d35e4065b4474cad0df6213, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  content: 
 --- !u!58 &7834677597108979984
 CircleCollider2D:
   m_ObjectHideFlags: 0

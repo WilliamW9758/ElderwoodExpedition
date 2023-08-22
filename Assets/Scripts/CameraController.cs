@@ -17,7 +17,8 @@ public class CameraController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        target = GameObject.FindGameObjectWithTag("Player").transform;
+        if (!target)
+            target = GameObject.FindGameObjectWithTag("Player").transform;
         offset = new Vector3(0,0,-10);
         shaking = false;
     }
@@ -27,8 +28,10 @@ public class CameraController : MonoBehaviour
     {
         if (target == null) return;
 
-        mousePos = GetComponentInChildren<Camera>().ScreenToWorldPoint(Input.mousePosition);
-        Vector3 mouseOffset = mousePos - targetPos;
+        mousePos = Input.mousePosition;
+        mousePos.z = 10;
+        Vector3 mouseOffset = GetComponentInChildren<Camera>().ScreenToWorldPoint(mousePos) - targetPos;
+        mouseOffset.z = 0;
 
         targetPos = target.position + offset + 0.3f * mouseOffset;
         if (!shaking)

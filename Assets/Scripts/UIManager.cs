@@ -12,9 +12,16 @@ public class UIManager : MonoBehaviour
     public TMP_Text playerHealthText;
     public Image playerEnergy;
 
+    public GameObject pauseMenu;
+
 
     public static UnityAction<string, Color> SpawnSystemText;
     public GameObject systemText;
+
+    private void Start()
+    {
+        ToggleInventoryUI();
+    }
 
     private void Update()
     {
@@ -22,27 +29,50 @@ public class UIManager : MonoBehaviour
         {
             ToggleInventoryUI();
         }
+        if (Input.GetKeyDown(GameManager.Pause))
+        {
+            if (GameManager.IsGamePaused)
+            {
+                ResumeGame();
+            } else
+            {
+                PauseGame();
+            }
+        }
     }
 
     public void ToggleInventoryUI()
     {
         inventoryUI.SetActive(!inventoryUI.activeSelf);
         if (inventoryUI.activeSelf)
-            GameManager.PauseGame();
+            GameManager.SetPlayerCanAttack(false);
         else
-            GameManager.ResumeGame();
+            GameManager.SetPlayerCanAttack(true);
     }
 
     private void OnEnable()
     {
         SpawnSystemText += _SpawnSystemText;
-        PlayerController.HealthUpdate += (health, maxHealth) => {
-            playerHealth.fillAmount = (float)health / maxHealth;
-            playerHealthText.text = health + " / " + maxHealth;
-        };
-        PlayerController.EnergyUpdate += (energy, maxEnergy) => {
-            playerEnergy.fillAmount = energy / maxEnergy;
-        };
+        PlayerController.HealthUpdate += HealthUpdate;
+        PlayerController.EnergyUpdate += EnergyUpdate;
+    }
+
+    private void OnDisable()
+    {
+        SpawnSystemText -= _SpawnSystemText;
+        PlayerController.HealthUpdate -= HealthUpdate;
+        PlayerController.EnergyUpdate -= EnergyUpdate;
+    }
+
+    void HealthUpdate(int health, int maxHealth)
+    {
+        playerHealth.fillAmount = (float)health / maxHealth;
+        playerHealthText.text = health + " / " + maxHealth;
+    }
+
+    void EnergyUpdate(float energy, float maxEnergy)
+    {
+        playerEnergy.fillAmount = energy / maxEnergy;
     }
 
     public void _SpawnSystemText(string text, Color color)
@@ -50,5 +80,22 @@ public class UIManager : MonoBehaviour
         GameObject message = Instantiate(systemText, transform);
         message.GetComponentInChildren<TMP_Text>().text = text;
         message.GetComponentInChildren<TMP_Text>().color = color;
+    }
+
+    public void PauseGame()
+    {
+        pauseMenu.SetActive(true);
+        GameManager.PauseGame();
+    }
+
+    public void ResumeGame()
+    {
+        pauseMenu.SetActive(false);
+        GameManager.ResumeGame();
+    }
+
+    public void QuitGame()
+    {
+        GameManager.QuitGame();
     }
 }

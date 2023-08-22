@@ -22,6 +22,7 @@ MonoBehaviour:
     - effect: 0
       statusEffect: {fileID: 0}
       effectPrefab: {fileID: 5772387218583320853, guid: 01d26d8d2e16f4c7bb769cc42f50fbd6, type: 3}
+      indicator: {fileID: 0}
       IsAtSelf: 1
       attackPercent: 0
       knockback: 0
@@ -45,6 +46,7 @@ MonoBehaviour:
     - effect: 0
       statusEffect: {fileID: 0}
       effectPrefab: {fileID: 4535341772395837998, guid: 66b6d80f00d3149cdb00892d6f03a8b3, type: 3}
+      indicator: {fileID: 0}
       IsAtSelf: 1
       attackPercent: 0
       knockback: 0
@@ -67,6 +69,7 @@ MonoBehaviour:
     - effect: 0
       statusEffect: {fileID: 0}
       effectPrefab: {fileID: 1487303956782587702, guid: 49abdfdd638244914b3c4f6b7acd3bb1, type: 3}
+      indicator: {fileID: 8479146459356465897, guid: a0893b9eea2b942e0bb5cd3ca8bcfd7b, type: 3}
       IsAtSelf: 1
       attackPercent: 150
       knockback: 10

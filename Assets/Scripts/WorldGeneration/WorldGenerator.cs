@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using NaughtyAttributes;
 using System;
 
 //[System.Serializable]
@@ -9,11 +8,11 @@ public class WorldGenerator: MonoBehaviour
 {
     /**
      * Air = 0
-     * Spawn = 1
-     * Boss = 2
-     * Elite = 3
-     * Chest = 4
-     * Fight = 5
+     * Wall = 1
+     * Spawn = 2
+     * Boss = 3
+     * Fight = 4
+     * Chest = 5
      * Event = 6
      * Shop = 7
      * 
@@ -71,9 +70,6 @@ public class WorldGenerator: MonoBehaviour
 
     //public Vector2 worldSize;
     //public int[,] rooms;
-    //public Vector2 eliteMinMax;
-    //public Vector2 chestMinMax;
-    //public Vector2 shopMinMax;
     //public int eliteCount;
     //public int chestCount;
     //public int fightCount;
@@ -82,11 +78,51 @@ public class WorldGenerator: MonoBehaviour
     //public List<Vector2> keyLocs;
     //public float visualDelay;
 
+    //public static WorldGenerator Instance;
+
     public int width;
     public int height;
 
     public string seed;
     public bool useRandomSeed;
+
+    MeshGenerator meshGen;
+
+    [SerializeField]
+    private int spawnLoc; // 0 = tl, 1 = tr, 2 = bl, 3 = br
+    [SerializeField]
+    private Coord spawnCoord;
+    [SerializeField]
+    private int bossLoc; // same as spawnloc
+    [SerializeField]
+    private Coord bossCoord;
+    [SerializeField]
+    private int fightCount;
+    [SerializeField]
+    private List<Coord> fightLoc;
+    [SerializeField]
+    private int chestCount;
+    [SerializeField]
+    private List<Coord> chestLoc;
+
+    public Vector2Int fightMinMax;
+    public Vector2Int chestMinMax;
+    public int spawnRadius = 4;
+    public int bossRadius = 6;
+    public int fightRadius = 5;
+    public int chestRadius = 1;
+
+    public GameObject playerPrefab;
+    public GameObject[] bossPrefab;
+    public GameObject bossPortalPrefab;
+    public EnemyHolder enemyHolder;
+    public GameObject[] enemyPrefab;
+    public GameObject chestPrefab;
+    public Item[] itemsList;
+
+    public GameObject player;
+    public GameObject boss;
+    public int bossIdx;
 
     [Range(0, 100)]
     public int randomFillPercent;
@@ -98,32 +134,86 @@ public class WorldGenerator: MonoBehaviour
 
     int[,] map;
 
-    private void Start()
+    //private void Start()
+    //{
+    //    GenerateMap();
+    //}
+
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.L))
+    //    {
+    //        GenerateMap();
+    //    }
+    //}
+
+    //private void Awake()
+    //{
+    //    if (Instance != null && Instance != this)
+    //    {
+    //        Destroy(this);
+    //    }
+    //    else
+    //    {
+    //        Instance = this;
+    //    }
+    //}
+
+    private void Awake()
     {
-        GenerateMap();
+        meshGen = GetComponent<MeshGenerator>();
     }
 
-    private void Update()
+    public void GenerateMap(bool spawnEntity = true)
     {
-        if (Input.GetMouseButtonDown(0))
+        if (useRandomSeed)
         {
-            GenerateMap();
+            seed = UnityEngine.Random.Range(0f, 1f).ToString();
         }
-    }
 
-    void GenerateMap()
-    {
+        System.Random rnd = new System.Random(seed.GetHashCode());
+
         map = new int[width, height];
-        RandomFillMap();
+        RandomFillMap(rnd);
 
-        for (int i = 0; i < smoothIteration; i++)
+        for (int i = 0; i < smoothIteration / 2; i++)
         {
             SmoothMap();
         }
 
+        int[,] grassMap = (int[,])map.Clone();
+
+        for (int i = 0; i < smoothIteration / 2; i++)
+        {
+            SmoothMap();
+        }
+
+        GenerateStructures();
         ProcessMap();
 
+        GameObject[] ehs = GameObject.FindGameObjectsWithTag("EnemyHolder");
+        foreach (var eh in ehs)
+        {
+            Destroy(eh);
+        }
+
+        if (spawnEntity)
+        {
+            foreach (var loc in fightLoc)
+            {
+                SpawnEnemies(rnd, loc);
+            }
+            foreach (var loc in chestLoc)
+            {
+                SpawnChest(rnd, loc);
+            }
+            calcBoss(rnd);
+            SpawnBossPortal();
+            SpawnPlayer();
+        }
+
         int[,] borderedMap = new int[width + borderSize * 2, height + borderSize * 2];
+        int[,] borderedMapGrass = new int[width + borderSize * 2, height + borderSize * 2];
 
         for (int x = 0; x < borderedMap.GetLength(0); x++)
         {
@@ -132,16 +222,38 @@ public class WorldGenerator: MonoBehaviour
                 if (x >= borderSize && x < width + borderSize && y >= borderSize && y < height + borderSize)
                 {
                     borderedMap[x, y] = map[x - borderSize, y - borderSize];
+                    borderedMapGrass[x, y] = grassMap[x - borderSize, y - borderSize];
                 }
                 else
                 {
                     borderedMap[x, y] = 1;
+                    borderedMapGrass[x, y] = 1;
                 }
             }
         }
 
-        MeshGenerator meshGen = GetComponent<MeshGenerator>();
-        meshGen.GenerateMesh(borderedMap, 1f);
+        meshGen.GenerateMesh(borderedMap, 1f, borderedMapGrass);
+    }
+
+    void GenerateStructures()
+    {
+        // Generate Spawn
+        DrawCircle(spawnCoord, spawnRadius, 2, 0, 1);
+
+        // Generate Boss
+        DrawCircle(bossCoord, bossRadius, 3, 0, 1);
+
+        // Generate Fights
+        foreach (var fight in fightLoc)
+        {
+            DrawCircle(fight, fightRadius, 4, 0, 1);
+        }
+
+        // Generate Chest
+        foreach (var chest in chestLoc)
+        {
+            DrawCircle(chest, chestRadius, 5, 0, 1);
+        }
     }
 
     void ProcessMap()
@@ -159,7 +271,6 @@ public class WorldGenerator: MonoBehaviour
         }
 
         List<List<Coord>> roomRegions = GetRegions(0);
-        List<Room> survivingRooms = new List<Room>();
         foreach (List<Coord> roomRegion in roomRegions)
         {
             if (roomRegion.Count < roomThresholdSize)
@@ -169,13 +280,24 @@ public class WorldGenerator: MonoBehaviour
                     map[tile.tileX, tile.tileY] = 1;
                 }
             }
-            else
-            {
-                survivingRooms.Add(new Room(roomRegion, map));
-            }
+        }
+
+        List<List<Coord>> structureRegions = GetRegions(0,2,3,4,5);
+        List<Room> survivingRooms = new List<Room>();
+        foreach (List<Coord> structureRegion in structureRegions)
+        {
+            //foreach (var item in structureRegion)
+            //{
+            //    Debug.Log(item);
+            //}
+            survivingRooms.Add(new Room(structureRegion, map));
         }
 
         survivingRooms.Sort();
+        //for (int i = 0; i < survivingRooms.Count; i++)
+        //{
+        //    Debug.Log(survivingRooms[i]);
+        //}
         survivingRooms[0].isMainRoom = true;
         survivingRooms[0].isAccessableFromMainRoom = true;
         ConnectClosestRooms(survivingRooms);
@@ -275,23 +397,24 @@ public class WorldGenerator: MonoBehaviour
         List<Coord> line = GetLine(tileA, tileB);
         foreach (Coord c in line)
         {
-            DrawCirle(c, 2);
+            DrawCircle(c, 2, 0, 1);
         }
     }
 
-    void DrawCirle(Coord c, int r)
+    void DrawCircle(Coord c, int r, int val, params int[] replaceVal)
     {
         for (int x = -r; x <= r; x++)
         {
             for (int y = -r; y <= r; y++)
             {
-                if (x*x + y*y <= r*r)
+                if (x*x + y*y < r*r)
                 {
                     int drawX = c.tileX + x;
                     int drawY = c.tileY + y;
                     if (IsInMapRange(drawX, drawY))
                     {
-                        map[drawX, drawY] = 0;
+                        if (Array.Exists(replaceVal, value => value.Equals(map[drawX, drawY])))
+                            map[drawX, drawY] = val;
                     }
                 }
             }
@@ -360,7 +483,7 @@ public class WorldGenerator: MonoBehaviour
         return new Vector3(-width / 2 + .5f + tile.tileX, -height / 2 + .5f + tile.tileY, -2);
     }
 
-    List<List<Coord>> GetRegions(int tileType)
+    List<List<Coord>> GetRegions(params int[] tileType)
     {
         List<List<Coord>> regions = new List<List<Coord>>();
         int[,] mapFlags = new int[width, height];
@@ -369,9 +492,9 @@ public class WorldGenerator: MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                if (mapFlags[x, y] == 0 && map[x, y] == tileType)
+                if (mapFlags[x, y] == 0 && Array.Exists(tileType, value => value.Equals(map[x, y])))
                 {
-                    List<Coord> newRegion = GetRegionTiles(x, y);
+                    List<Coord> newRegion = GetRegionTiles(x, y, tileType);
                     regions.Add(newRegion);
 
                     foreach (Coord tile in newRegion)
@@ -384,11 +507,10 @@ public class WorldGenerator: MonoBehaviour
         return regions;
     }
 
-    List<Coord> GetRegionTiles(int startX, int startY)
+    List<Coord> GetRegionTiles(int startX, int startY, params int[] tileType)
     {
         List<Coord> tiles = new List<Coord>();
         int[,] mapFlags = new int[width, height];
-        int tileType = map[startX, startY];
 
         Queue<Coord> queue = new Queue<Coord>();
         queue.Enqueue(new Coord(startX, startY));
@@ -405,7 +527,7 @@ public class WorldGenerator: MonoBehaviour
                 {
                     if (IsInMapRange(x, y) && (y == tile.tileY || x == tile.tileX))
                     {
-                        if (mapFlags[x, y] == 0 && map[x,y] == tileType)
+                        if (mapFlags[x, y] == 0 && Array.Exists(tileType, value => value.Equals(map[x, y])))
                         {
                             mapFlags[x, y] = 1;
                             queue.Enqueue(new Coord(x, y));
@@ -423,15 +545,8 @@ public class WorldGenerator: MonoBehaviour
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
-    void RandomFillMap()
+    void RandomFillMap(System.Random rnd)
     {
-        if (useRandomSeed)
-        {
-            seed = UnityEngine.Random.Range(0f, 1f).ToString();
-        }
-
-        System.Random rnd = new System.Random(seed.GetHashCode());
-
         for (int x = 0; x < width; x++) 
         {
             for (int y = 0; y < height; y++)
@@ -446,6 +561,116 @@ public class WorldGenerator: MonoBehaviour
                 }
             }
         }
+
+        Dictionary<Coord, int> existingStructures = new Dictionary<Coord, int>();
+
+        spawnLoc = rnd.Next(0, 4);
+        switch (spawnLoc)
+        {
+            case 0:
+                spawnCoord = new Coord(spawnRadius, height - spawnRadius);
+                break;
+            case 1:
+                spawnCoord = new Coord(width - spawnRadius, height - spawnRadius);
+                break;
+            case 2:
+                spawnCoord = new Coord(spawnRadius, spawnRadius);
+                break;
+            case 3:
+                spawnCoord = new Coord(width - spawnRadius, spawnRadius);
+                break;
+        }
+        existingStructures.Add(spawnCoord, spawnRadius);
+
+        bossLoc = rnd.Next(0, 4);
+        while(bossLoc == spawnLoc)
+        {
+            bossLoc = rnd.Next(0, 4);
+        }
+        switch (bossLoc)
+        {
+            case 0:
+                bossCoord = new Coord(bossRadius, height - bossRadius);
+                break;
+            case 1:
+                bossCoord = new Coord(width - bossRadius, height - bossRadius);
+                break;
+            case 2:
+                bossCoord = new Coord(bossRadius, bossRadius);
+                break;
+            case 3:
+                bossCoord = new Coord(width - bossRadius, bossRadius);
+                break;
+        }
+        existingStructures.Add(bossCoord, bossRadius);
+
+        fightCount = rnd.Next(fightMinMax.x, fightMinMax.y + 1);
+        chestCount = rnd.Next(chestMinMax.x, chestMinMax.y + 1);
+        fightLoc.Clear();
+        chestLoc.Clear();
+
+        for (int i = 0; i < fightCount; i++)
+        {
+            Coord tempCoord = new Coord(rnd.Next(fightRadius, width - fightRadius), rnd.Next(fightRadius, height - fightRadius));
+            bool fit = true;
+            foreach (var item in existingStructures)
+            {
+                if (CircleOverlap(item.Key, item.Value, tempCoord, fightRadius + 1))
+                {
+                    fit = false;
+                    break;
+                }
+            }
+            while (!fit)
+            {
+                tempCoord = new Coord(rnd.Next(fightRadius, width - fightRadius), rnd.Next(fightRadius, height - fightRadius));
+                fit = true;
+                foreach (var item in existingStructures)
+                {
+                    if (CircleOverlap(item.Key, item.Value, tempCoord, fightRadius + 1))
+                    {
+                        fit = false;
+                        break;
+                    }
+                }
+            }
+            existingStructures.Add(tempCoord, fightRadius);
+            fightLoc.Add(tempCoord);
+        }
+
+        for (int i = 0; i < chestCount; i++)
+        {
+            Coord tempCoord = new Coord(rnd.Next(chestRadius, width - chestRadius), rnd.Next(chestRadius, height - chestRadius));
+            bool fit = true;
+            foreach (var item in existingStructures)
+            {
+                if (CircleOverlap(item.Key, item.Value, tempCoord, chestRadius + 1))
+                {
+                    fit = false;
+                    break;
+                }
+            }
+            while (!fit)
+            {
+                tempCoord = new Coord(rnd.Next(chestRadius, width - chestRadius), rnd.Next(chestRadius, height - chestRadius));
+                fit = true;
+                foreach (var item in existingStructures)
+                {
+                    if (CircleOverlap(item.Key, item.Value, tempCoord, chestRadius + 1))
+                    {
+                        fit = false;
+                        break;
+                    }
+                }
+            }
+            existingStructures.Add(tempCoord, chestRadius);
+            chestLoc.Add(tempCoord);
+        }
+    }
+
+    bool CircleOverlap(Coord circleA, int rA, Coord circleB, int rB)
+    {
+        return Coord.Distance(circleA, circleB) < (rA + rB);
     }
 
     void SmoothMap()
@@ -493,6 +718,23 @@ public class WorldGenerator: MonoBehaviour
         return wallCount;
     }
 
+    public void ClearMap()
+    {
+        GameObject[] ehs = GameObject.FindGameObjectsWithTag("EnemyHolder");
+        foreach (var eh in ehs)
+        {
+            Destroy(eh);
+        }
+        GameObject[] chests = GameObject.FindGameObjectsWithTag("Chest");
+        foreach (var chest in chests)
+        {
+            Destroy(chest);
+        }
+
+        meshGen.ClearMap();
+    }
+
+    [Serializable]
     struct Coord
     {
         public int tileX;
@@ -503,6 +745,18 @@ public class WorldGenerator: MonoBehaviour
             tileX = x;
             tileY = y;
         }
+
+        public Vector3 ToWorldPos(int width, int height, float squareSize)
+        {
+            return new Vector3(-width / 2 + tileX * squareSize + squareSize / 2, -height / 2 + tileY * squareSize + squareSize / 2, 0);
+        }
+
+        public static float Distance(Coord A, Coord B)
+        {
+            return Mathf.Sqrt((A.tileX - B.tileX) * (A.tileX - B.tileX) + (A.tileY - B.tileY) * (A.tileY - B.tileY));
+        }
+
+        public override string ToString() => "[" + tileX + ", " + tileY + "]";
     }
 
     class Room : IComparable<Room>
@@ -529,7 +783,8 @@ public class WorldGenerator: MonoBehaviour
                 {
                     for (int y = tile.tileY - 1; y <= tile.tileY + 1; y++)
                     {
-                        if (x == tile.tileX || y == tile.tileY)
+                        if ((x == tile.tileX || y == tile.tileY) &&
+                            x >= 0 && x < map.GetLength(0) && y >= 0 && y < map.GetLength(1))
                         {
                             if (map[x, y] == 1)
                             {
@@ -577,5 +832,50 @@ public class WorldGenerator: MonoBehaviour
         {
             return connectedRooms.Contains(otherRoom);
         }
+    }
+
+    private void SpawnPlayer()
+    {
+        SpawnPlayer(spawnCoord.ToWorldPos(width, height, 1f));
+    }
+
+    public void SpawnPlayer(Vector3 location)
+    {
+        if (player != null) return;
+        player = Instantiate(playerPrefab, location, Quaternion.identity);
+        Debug.Log("Player instantiated at: " + location);
+    }
+
+    private void SpawnEnemies(System.Random rnd, Coord location)
+    {
+        EnemyHolder eh = Instantiate(enemyHolder, location.ToWorldPos(width, height, 1f), Quaternion.identity);
+        int enemyCount = rnd.Next(2, 5);
+        for (int i = 0; i < enemyCount; i++)
+        {
+            int idx = rnd.Next(enemyPrefab.Length);
+            GameObject enemy = Instantiate(enemyPrefab[idx], eh.transform.position, Quaternion.identity, eh.transform);
+            eh.Enemies.Add(enemy.GetComponent<EnemyController>());
+        }
+    }
+
+    private void SpawnChest(System.Random rnd, Coord location)
+    {
+        Instantiate(chestPrefab, location.ToWorldPos(width, height, 1f), Quaternion.identity);
+    }
+
+    private void calcBoss(System.Random rnd)
+    {
+        bossIdx = rnd.Next(bossPrefab.Length);
+    }
+
+    public void SpawnBoss(Vector3 location)
+    {
+        boss = Instantiate(bossPrefab[bossIdx], location, Quaternion.identity);
+        Debug.Log("Boss instantiated at: " + location);
+    }
+
+    private void SpawnBossPortal()
+    {
+        Instantiate(bossPortalPrefab, bossCoord.ToWorldPos(width, height, 1f), Quaternion.identity);
     }
 }

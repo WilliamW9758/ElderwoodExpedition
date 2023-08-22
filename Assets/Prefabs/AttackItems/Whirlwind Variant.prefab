@@ -99,6 +99,10 @@ PrefabInstance:
       propertyPath: thisItem
       value: 
       objectReference: {fileID: 11400000, guid: f1445123fbf1a40839ee9dda8bf7d97c, type: 2}
+    - target: {fileID: 7202498431146383703, guid: 275f6d4ea59094a9db8aa36d1d0cb391, type: 3}
+      propertyPath: item
+      value: 
+      objectReference: {fileID: 11400000, guid: 3e54add86186747a88a5d4d99344f82c, type: 2}
     - target: {fileID: 8568357219672015854, guid: 275f6d4ea59094a9db8aa36d1d0cb391, type: 3}
       propertyPath: m_Name
       value: Whirlwind Variant

@@ -22,180 +22,210 @@ MonoBehaviour:
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
   InvenotryAllowedItems: 

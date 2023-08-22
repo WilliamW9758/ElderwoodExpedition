@@ -33,14 +33,20 @@ public class InventoryObject : ScriptableObject
     public List<InventorySlot> GetSlots { get { return Container.Slots; } }
     public int GetSize { get { return Container.inventorySize; } }
 
+    public ItemObject itemToAdd;
+
+    [HideInInspector]
+    public UnityAction<Item> AddedItem;
+
     public ItemType[] InvenotryAllowedItems = new ItemType[0];
 
-    public bool AddItem(Item _item)
+    public InventorySlot AddItem(Item _item)
     {
         if (EmptySlotCount <= 0)
-            return false;
-        SetEmptySlot(_item);
-        return true;
+            return null;
+        InventorySlot ret = SetEmptySlot(_item);
+        AddedItem?.Invoke(_item);
+        return ret;
     }
 
     public int GetFirstNonEmptySlotIndex
@@ -150,6 +156,11 @@ public class InventoryObject : ScriptableObject
         Container.Clear();
         Container.SetAllowedItems(InvenotryAllowedItems);
     }
+    [Button]
+    private void ManualAddItem()
+    {
+        AddItem(itemToAdd.data);
+    }
 }
 [System.Serializable]
 public class Inventory: ISerializationCallbackReceiver
@@ -207,11 +218,15 @@ public class InventorySlot
     public SlotUpdated OnBeforeUpdate;
     [System.NonSerialized]
     public SlotUpdated ItemDropped;
+    [System.NonSerialized]
+    public SlotUpdated SlotLockStateChange;
 
-    public UnityAction<bool> UpdateSelected;
+    public UnityAction<InventorySlot, bool> UpdateSelected;
 
     public Item item = new Item();
     public bool IsEmpty { get { return item.Id == -1; } }
+
+    private bool locked;
 
     public ItemObject ItemObject
     {
@@ -243,15 +258,30 @@ public class InventorySlot
     }
     public void RemoveItem()
     {
+        //if (locked)
+        //{
+        //    Debug.LogError("Cannot remove from locked slot");
+        //} else
+        //{
+        Debug.Log("Can still remove item if slot if locked");
         UpdateSlot(new Item());
+        //}
     }
     public void DropItem()
     {
-        ItemDropped?.Invoke(this);
-        UpdateSlot(new Item());
+        if (locked)
+        {
+            Debug.LogError("Cannot drop from locked slot");
+        } else
+        {
+            ItemDropped?.Invoke(this);
+            UpdateSlot(new Item());
+        }
     }
     public bool CanPlaceInSlot(ItemObject _itemObject)
     {
+        if (locked)
+            return false;
         if (AllowedItems.Length <= 0 || _itemObject == null || _itemObject.data.Id < 0)
             return true;
         for (int i = 0; i < AllowedItems.Length; i++)
@@ -260,5 +290,17 @@ public class InventorySlot
                 return true;
         }
         return false;
+    }
+
+    public void SetLocked(bool value)
+    {
+        Debug.Log("Lock set to: " + value);
+        locked = value;
+        SlotLockStateChange?.Invoke(this);
+    }
+
+    public bool GetLocked()
+    {
+        return locked;
     }
 }

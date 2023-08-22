@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Events;
 
 public enum EnemyClass
 {
@@ -15,6 +16,8 @@ public enum EnemyClass
 
 public class EnemyController : EntityController
 {
+    public UnityAction DeathTrigger;
+
     public EnemyClass enemyClass;
 
     public enum EnemyStateMachine
@@ -33,14 +36,14 @@ public class EnemyController : EntityController
     public float attackRadius;
     public float aggroRadius;
 
-    public ItemObject testAttack;
-    public ItemObject testAttack1;
-    public ItemObject testAttack2;
-    public ItemObject testAttack3;
-    public ItemObject testAttack4;
+    //public ItemObject testAttack;
+    //public ItemObject testAttack1;
+    //public ItemObject testAttack2;
+    //public ItemObject testAttack3;
+    //public ItemObject testAttack4;
 
     private Vector2 randomVec;
-    private Vector2 originalPos;
+    public Vector2 originalPos;
 
     public GameObject player;
     public Vector2 relativePos;
@@ -50,19 +53,25 @@ public class EnemyController : EntityController
 
     public Image breakFill;
 
+    public bool dropOnDeath;
+
+    private void Awake()
+    {
+        originalPos = transform.position;
+    }
+
     protected new void Start()
     {
         base.Start();
         StartCoroutine(RandomMovement());
         player = GameObject.FindGameObjectWithTag("Player");
         stunCount = stunAmount;
-        originalPos = transform.position;
 
-        wc.weaponLeft.AddItem(new Item(testAttack));
-        wc.weaponLeft.AddItem(new Item(testAttack1));
-        wc.weaponLeft.AddItem(new Item(testAttack2));
-        wc.weaponRight.AddItem(new Item(testAttack3));
-        wc.weaponRight.AddItem(new Item(testAttack4));
+        //wc.weaponLeft.AddItem(new Item(testAttack));
+        //wc.weaponLeft.AddItem(new Item(testAttack1));
+        //wc.weaponLeft.AddItem(new Item(testAttack2));
+        //wc.weaponRight.AddItem(new Item(testAttack3));
+        //wc.weaponRight.AddItem(new Item(testAttack4));
     }
 
     protected new void Update()
@@ -134,7 +143,7 @@ public class EnemyController : EntityController
     private IEnumerator StartAlert()
     {
         yield return new WaitForSeconds(1f);
-        state = EnemyStateMachine.Preperation;
+        Aggro();
     }
 
     protected void PreperationLogic()
@@ -192,7 +201,12 @@ public class EnemyController : EntityController
         {
             moveVec = relativePos.normalized;
         }
+    }
 
+    public void Aggro()
+    {
+        // Play !! animation
+        state = EnemyStateMachine.Preperation;
     }
 
     protected IEnumerator RandomMovement()
@@ -210,7 +224,7 @@ public class EnemyController : EntityController
     {
         if (state == EnemyStateMachine.Patrol || state == EnemyStateMachine.Alert)
         {
-            state = EnemyStateMachine.Preperation;
+            Aggro();
         }
         bool killed = base.TakeDamage(damage, breakAmount, _crit, type);
 
@@ -227,6 +241,15 @@ public class EnemyController : EntityController
         return killed;
     }
 
+    protected override void OnDeath()
+    {
+        if (dropOnDeath)
+        {
+            wc.DropRandomItem();
+        }
+        base.OnDeath();
+    }
+
     protected new IEnumerator Stun_Cor(float seconds)
     {
         stun = true;
@@ -234,12 +257,6 @@ public class EnemyController : EntityController
         stun = false;
         stunCount = stunAmount;
         //breakFill.fillAmount = stunCount / stunAmount;
-    }
-
-    protected override void OnDeath()
-    {
-        //Destroy(gameObject);
-        health = maxHealth;
     }
 
     private void OnDrawGizmos()

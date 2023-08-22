@@ -13,13 +13,14 @@ public class InventoryInterface : MonoBehaviour
     public InventoryObject inventory;
     public Dictionary<GameObject, InventorySlot> slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
 
-    void Start()
+    protected void Awake()
     {
         CreateSlots();
         for (int i = 0; i < inventory.GetSlots.Count; i++)
         {
             inventory.GetSlots[i].parent = this;
             inventory.GetSlots[i].OnAfterUpdate += OnSlotUpdate;
+            OnSlotUpdate(inventory.GetSlots[i]);
         }
         AddEvent(gameObject, EventTriggerType.PointerEnter, delegate { OnEnterInterface(gameObject); });
         AddEvent(gameObject, EventTriggerType.PointerExit, delegate { OnExitInterface(gameObject); });
@@ -27,14 +28,23 @@ public class InventoryInterface : MonoBehaviour
 
     protected void OnSlotUpdate(InventorySlot _slot)
     {
-        //Debug.Log("Trigger On Slot Update");
         if (_slot.item.Id >= 0)
         {
+            Debug.Log("Trigger On Slot Update Has item");    
             _slot.slotDisplay.transform.GetChild(0).GetComponentInChildren<Image>().sprite = _slot.ItemObject.uiDisplay;
-            _slot.slotDisplay.transform.GetChild(0).GetComponentInChildren<Image>().color = new Color(1, 1, 1, 1);
+            if (_slot.GetLocked())
+            {
+                _slot.slotDisplay.transform.GetChild(0).GetComponentInChildren<Image>().color = new Color(1, 1, 1, 0.5f);
+            }
+            else
+            {
+                _slot.slotDisplay.transform.GetChild(0).GetComponentInChildren<Image>().color = new Color(1, 1, 1, 1);
+            }
         }
         else
         {
+            Debug.Log("Trigger On Slot Update No item");
+
             _slot.slotDisplay.transform.GetChild(0).GetComponentInChildren<Image>().sprite = null;
             _slot.slotDisplay.transform.GetChild(0).GetComponentInChildren<Image>().color = new Color(1, 1, 1, 0);
         }
@@ -60,6 +70,7 @@ public class InventoryInterface : MonoBehaviour
         AddEvent(obj, EventTriggerType.Drag, delegate { OnDrag(obj); });
 
         inventory.GetSlots[i].slotDisplay = obj;
+        inventory.GetSlots[i].SlotLockStateChange += OnSlotUpdate;
 
         slotsOnInterface.Add(obj, inventory.GetSlots[i]);
     } 
@@ -76,10 +87,17 @@ public class InventoryInterface : MonoBehaviour
     public void OnEnter(GameObject obj)
     {
         MouseData.slotHoveredOver = obj;
+        Debug.Log("Enter");
+        StopAllCoroutines();
+        Debug.Log(slotsOnInterface[obj].item.Name);
+        StartCoroutine(StartHoverTimer(slotsOnInterface[obj].item.Name));
     }
     public void OnExit(GameObject obj)
     {
         MouseData.slotHoveredOver = null;
+        Debug.Log("Exit");
+        StopAllCoroutines();
+        HoverUIManager.OnMouseLoseFocus();
     }
     public void OnEnterInterface(GameObject obj)
     {
@@ -91,6 +109,10 @@ public class InventoryInterface : MonoBehaviour
     }
     public void OnDragStart(GameObject obj)
     {
+        if (slotsOnInterface[obj].GetLocked())
+        {
+            return;
+        }
         MouseData.tempItemBeingDragged = CreateTempItem(obj);
     }
     public GameObject CreateTempItem(GameObject obj)
@@ -116,6 +138,10 @@ public class InventoryInterface : MonoBehaviour
             slotsOnInterface[obj].DropItem();
             return;
         }
+        if (MouseData.slotHoveredOver && slotsOnInterface[obj].GetLocked())
+        {
+            return;
+        }
         if (MouseData.slotHoveredOver && slotsOnInterface[obj].item.Id >= 0)
         {
             InventorySlot mouseHoverSlotData = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver];
@@ -128,9 +154,33 @@ public class InventoryInterface : MonoBehaviour
             MouseData.tempItemBeingDragged.GetComponent<RectTransform>().position = Input.mousePosition;
     }
 
-    private void OnDisable()
+    private IEnumerator StartHoverTimer(string content)
+    {
+        Debug.Log("StartHoverTimer");
+
+        yield return new WaitForSecondsRealtime(0.5f);
+
+        Debug.Log("End Hover Timer");
+
+        HoverUIManager.OnMouseHover(content, Input.mousePosition);
+    }
+
+    private void OnDestroy()
     {
         Destroy(MouseData.tempItemBeingDragged);
+        for (int i = 0; i < inventory.GetSlots.Count; i++)
+        {
+            inventory.GetSlots[i].OnAfterUpdate -= OnSlotUpdate;
+            inventory.GetSlots[i].SlotLockStateChange -= OnSlotUpdate;
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        for (int i = 0; i < inventory.GetSlots.Count; i++)
+        {
+            inventory.GetSlots[i].OnAfterUpdate -= OnSlotUpdate;
+        }
     }
 }
 

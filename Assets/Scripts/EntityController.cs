@@ -18,6 +18,9 @@ public enum Elements
 
 public class EntityController : MonoBehaviour
 {
+    public UnityAction OnEntityDestroy;
+    public UnityAction OnResetCombatTimer;
+
     // stats and effects
     public float speed;
     public float speedMod;
@@ -32,6 +35,8 @@ public class EntityController : MonoBehaviour
     public float attackRatioMod;
     public float critRate;
     public float critDamage;
+    public float damageReduction;
+    public float abilityHaste;
 
     public bool controlLock;
     public bool invincible;
@@ -40,6 +45,10 @@ public class EntityController : MonoBehaviour
     public bool stun;
     public bool airborne;
     public bool dizzy;
+    public bool root;
+
+    public float inCombatCD = 3f;
+    public bool isInCombat;
 
     public Vector2 moveVec;
     protected Rigidbody2D rb;
@@ -76,11 +85,11 @@ public class EntityController : MonoBehaviour
     {
         if (ghost)
         {
-            GetComponent<Collider2D>().enabled = false;
+            gameObject.layer = 8; // Ignore entity collision
         }
         else
         {
-            GetComponent<Collider2D>().enabled = true;
+            gameObject.layer = 7; // Entity layer
         }
 
         if (!GameManager.IsGamePaused)
@@ -98,13 +107,19 @@ public class EntityController : MonoBehaviour
     {
         GainEnergy(energyRegen * Time.fixedDeltaTime);
 
-        rb.freezeRotation = controlLock;
+        rb.freezeRotation = controlLock || stun || dizzy;
         rb.angularVelocity = 0f;
 
-        if (controlLock)
+        if (controlLock || stun || dizzy)
         {
             rb.velocity = dashVelocity + pushVelocity;
-        } else
+        }
+        else if (root)
+        {
+            rb.velocity = dashVelocity + pushVelocity;
+            rb.rotation = Quaternion.Slerp(transform.rotation, calcTargetRot(), rotLerpSpeed * Time.deltaTime).eulerAngles.z;
+        }
+        else
         {
             rb.velocity = moveVec * speed * (1 + speedMod) + dashVelocity + pushVelocity;
             rb.rotation = Quaternion.Slerp(transform.rotation, calcTargetRot(), rotLerpSpeed * Time.deltaTime).eulerAngles.z;
@@ -128,6 +143,7 @@ public class EntityController : MonoBehaviour
     public virtual bool TakeDamage(int damage, int breakAmount, bool _crit, Elements type = Elements.physical)
     {
         TriggerStatusEffect(StatusEffectObject.TriggerType.OnHit, gameObject);
+        EnterCombat();
         if (invincible)
         {
             ShowFloatingText("Immune"); // show immune
@@ -160,10 +176,10 @@ public class EntityController : MonoBehaviour
         StartCoroutine(TakeDamage_Cor());
         StartCoroutine(Dizzy_Cor(0.1f));
         //StartCoroutine(CameraController.cameraShake(0.05f, damage * 0.02f));
-        health -= damage;
+        health -= (int) (damage * (1f - damageReduction));
         TriggerStatusEffect(StatusEffectObject.TriggerType.OnTakeDamage);
         //healthFill.fillAmount = (float)health / maxHealth;
-        if (health < 0)
+        if (health <= 0)
         {
             OnDeath();
             return true;
@@ -174,8 +190,11 @@ public class EntityController : MonoBehaviour
     protected virtual void OnDeath()
     {
         TriggerStatusEffect(StatusEffectObject.TriggerType.OnDeath, gameObject);
+        OnEntityDestroy?.Invoke();
+        
         // for testing
-        health = maxHealth;
+        Destroy(gameObject);
+        //health = maxHealth;
     }
 
     public virtual void StartDash(Vector2 dir)
@@ -335,5 +354,27 @@ public class EntityController : MonoBehaviour
                 }
             }
         }
+    }
+
+
+    private IEnumerator _EnterCombat()
+    {
+        isInCombat = true;
+        wc.LockAllSlots();
+        yield return new WaitForSeconds(inCombatCD);
+        isInCombat = false;
+        wc.UnlockAllSlots();
+    }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+    }
+
+    public void EnterCombat()
+    {
+        StopCoroutine("_EnterCombat");
+        OnResetCombatTimer?.Invoke();
+        StartCoroutine("_EnterCombat");
     }
 }

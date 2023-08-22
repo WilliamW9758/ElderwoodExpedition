@@ -16,6 +16,13 @@ MonoBehaviour:
   database: {fileID: 11400000, guid: 5e4b95d5226534c57916b91eaa262cbb, type: 2}
   type: 0
   Container:
-    inventorySize: 0
-    Slots: []
+    inventorySize: 1
+    Slots:
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
   InvenotryAllowedItems: 

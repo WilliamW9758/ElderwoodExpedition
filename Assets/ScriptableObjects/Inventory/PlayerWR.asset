@@ -22,10 +22,14 @@ MonoBehaviour:
       item:
         Name: 
         Id: -1
-        effects: []
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 010000000200000003000000
       item:
         Name: 
         Id: -1
-        effects: []
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
   InvenotryAllowedItems: 010000000200000003000000

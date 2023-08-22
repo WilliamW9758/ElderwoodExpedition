@@ -99,6 +99,10 @@ PrefabInstance:
       propertyPath: thisItem
       value: 
       objectReference: {fileID: 11400000, guid: a2f63a0a1053c40928c5276d7094fef1, type: 2}
+    - target: {fileID: 7202498431146383703, guid: 275f6d4ea59094a9db8aa36d1d0cb391, type: 3}
+      propertyPath: item
+      value: 
+      objectReference: {fileID: 11400000, guid: b109b391a235841a684b904d6bcc1002, type: 2}
     - target: {fileID: 8568357219672015854, guid: 275f6d4ea59094a9db8aa36d1d0cb391, type: 3}
       propertyPath: m_Name
       value: LateralSlash Variant

@@ -99,6 +99,10 @@ PrefabInstance:
       propertyPath: thisItem
       value: 
       objectReference: {fileID: 11400000, guid: 0f2c49a21a5934c69822c85d663f48c0, type: 2}
+    - target: {fileID: 7202498431146383703, guid: 275f6d4ea59094a9db8aa36d1d0cb391, type: 3}
+      propertyPath: item
+      value: 
+      objectReference: {fileID: 11400000, guid: 29d226eb5aa20487ba5d8812e62eb8bb, type: 2}
     - target: {fileID: 8568357219672015854, guid: 275f6d4ea59094a9db8aa36d1d0cb391, type: 3}
       propertyPath: m_Name
       value: Parry Variant

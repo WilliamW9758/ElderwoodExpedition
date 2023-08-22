@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 781403612458173287}
   - component: {fileID: 781403612458173285}
   - component: {fileID: 781403612458173286}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 781403612766603729}
   - component: {fileID: 781403612766603730}
   - component: {fileID: 781403612766603731}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 781403613243614101}
   - component: {fileID: 781403613243614107}
   - component: {fileID: 781403613243614100}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BreakBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -267,7 +267,7 @@ GameObject:
   - component: {fileID: 781403613963480452}
   - component: {fileID: 781403613963480458}
   - component: {fileID: 781403613963480459}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HealthFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -343,7 +343,7 @@ GameObject:
   - component: {fileID: 781403614016630094}
   - component: {fileID: 781403614016630092}
   - component: {fileID: 781403614016630093}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BreakFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -422,7 +422,8 @@ GameObject:
   - component: {fileID: 4055751855352929173}
   - component: {fileID: 3975186682602802501}
   - component: {fileID: 5689706473980516451}
-  m_Layer: 0
+  - component: {fileID: 8784800964810055905}
+  m_Layer: 7
   m_Name: TargetDummy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -487,7 +488,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: a7d698b4c14a44d4798c6253d8f9d3be, type: 3}
-  m_Color: {r: 0.33962262, g: 0.33962262, b: 0.33962262, a: 1}
+  m_Color: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -553,6 +554,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0
   speedMod: 0
+  rotLerpSpeed: 0
   maxHealth: 100
   health: 100
   maxEnergy: 0
@@ -563,6 +565,7 @@ MonoBehaviour:
   attackRatioMod: 0
   critRate: 0
   critDamage: 0
+  controlLock: 0
   invincible: 0
   ghost: 0
   controlImmune: 0
@@ -575,15 +578,26 @@ MonoBehaviour:
   canvas: {fileID: 0}
   healthFill: {fileID: 0}
   floatingTextPrefab: {fileID: 3132772881082065344, guid: a6914bb8f8f204416be948c5b1835085, type: 3}
-  systemTextPrefab: {fileID: 0}
+  floatingTextCritPrefab: {fileID: 3132772881082065344, guid: 113a9803bf6724102810789fe820a08d, type: 3}
   buffSlotPrefab: {fileID: 0}
   buffDisplay: {fileID: 0}
   NoIcon: {fileID: 0}
+  wc: {fileID: 0}
   currentElement: 0
+  enemyClass: 0
+  state: 0
   stunAmount: 100
   stunCount: 0
+  attackRadius: 0
   aggroRadius: 0
+  testAttack: {fileID: 11400000, guid: 7189d4cdde24f43d4926e36f73f19bf5, type: 2}
+  testAttack1: {fileID: 11400000, guid: 7189d4cdde24f43d4926e36f73f19bf5, type: 2}
+  testAttack2: {fileID: 11400000, guid: 7189d4cdde24f43d4926e36f73f19bf5, type: 2}
+  testAttack3: {fileID: 11400000, guid: 7189d4cdde24f43d4926e36f73f19bf5, type: 2}
+  testAttack4: {fileID: 11400000, guid: 7189d4cdde24f43d4926e36f73f19bf5, type: 2}
+  originalPos: {x: 0, y: 0}
   player: {fileID: 0}
+  relativePos: {x: 0, y: 0}
   alertAnim: {fileID: 4865365602846031273, guid: b95b69440d7c44aa8a38f80fae7fb7d7, type: 3}
   deathAnim: {fileID: 0}
   breakFill: {fileID: 0}
@@ -602,4 +616,33 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 1.3
+  m_Radius: 0.5
+--- !u!114 &8784800964810055905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4055751855352929195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35ff852e9252a4763825f97457eb78aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponLeft: {fileID: 11400000, guid: dd2c3b3557e984ebf861af8ad32e76a8, type: 2}
+  weaponRight: {fileID: 11400000, guid: dd2c3b3557e984ebf861af8ad32e76a8, type: 2}
+  itemWorldPrefab: {fileID: 8568357219672015854, guid: 275f6d4ea59094a9db8aa36d1d0cb391, type: 3}
+  weaponPtrLeft: -1
+  weaponPtrRight: -1
+  defaultReloadCDLeft: 0
+  defaultReloadCDRight: 0
+  cumulatedReloadCDLeft: 0
+  cumulatedReloadCDRight: 0
+  reloadingLeft: 0
+  reloadingRight: 0
+  reloadOnEffectEndLeft: 0
+  reloadOnEffectEndRight: 0
+  currentItem: []
+  nextItemLeft: []
+  nextItemRight: []
+  canAttack: 1

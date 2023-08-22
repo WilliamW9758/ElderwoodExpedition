@@ -23,6 +23,8 @@ public class PlayerController : EntityController
     {
         base.Start();
 
+        inventory.AddedItem += OnItemAdded;
+
         for (int i = 0; i < inventory.GetSize; i++)
         {
             inventory.GetSlots[i].ItemDropped += OnItemDropped;
@@ -37,10 +39,14 @@ public class PlayerController : EntityController
         if (Input.GetKeyDown(KeyCode.Minus))
         {
             inventory.Save();
+            wc.weaponLeft.Save();
+            wc.weaponRight.Save();
         }
         if (Input.GetKeyDown(KeyCode.Equals))
         {
             inventory.Load();
+            wc.weaponLeft.Load();
+            wc.weaponRight.Load();
         }
         if (Input.GetKeyDown(GameManager.Interact))
         {
@@ -82,16 +88,6 @@ public class PlayerController : EntityController
             moveVec = Vector2.zero;
         }
 
-        if (Input.GetKeyDown(KeyCode.Minus))
-        {
-            wc.weaponLeft.Save();
-            wc.weaponRight.Save();
-        }
-        if (Input.GetKeyDown(KeyCode.Equals))
-        {
-            wc.weaponLeft.Load();
-            wc.weaponRight.Load();
-        }
 
         if (Input.GetKeyDown(GameManager.PrimaryAttack)
             && wc.canAttack
@@ -141,6 +137,12 @@ public class PlayerController : EntityController
         EnergyUpdate?.Invoke(energy, maxEnergy);
     }
 
+    protected override void OnDeath()
+    {
+        //health = maxHealth;
+        GameManager.PlayerDeath();
+    }
+
     protected new IEnumerator TakeDamage_Cor()
     {
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
@@ -162,11 +164,46 @@ public class PlayerController : EntityController
         {
             GameObject itemWorld = Instantiate(itemWorldPrefab, transform.position, Quaternion.identity);
             itemWorld.GetComponent<ItemWorld>().item = inventory.database.ItemObjects[id];
+
+            if (_slot.item.Type == ItemType.Relic)
+            {
+                Item currentItem = _slot.item;
+                foreach (ItemEffect ie in currentItem.InitialEffects)
+                {
+                    if (ie.effect == Effect.AddStatusEffect)
+                    {
+                        RemoveBuff(ie.statusEffect);
+                    }
+                }
+            }
+        }
+    }
+
+    private void OnItemAdded(Item _item)
+    {
+        if (_item.Type == ItemType.Relic)
+        {
+            Item currentItem = _item;
+            foreach (ItemEffect ie in currentItem.InitialEffects)
+            {
+                if (ie.effect == Effect.AddStatusEffect)
+                {
+                    AddStatusEffect(ie.statusEffect.InitializeBuff(gameObject));
+                }
+            }
         }
     }
 
     private void OnApplicationQuit()
     {
         inventory.Clear();
+    }
+
+    private void OnDisable()
+    {
+        for (int i = 0; i < inventory.GetSize; i++)
+        {
+            inventory.GetSlots[i].ItemDropped -= OnItemDropped;
+        }
     }
 }

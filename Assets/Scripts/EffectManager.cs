@@ -169,6 +169,7 @@ public class EffectManager : MonoBehaviour
                 {
                     GameManager.QuickTimeScale(0.3f, 0.3f);
                     OnEffectHit?.Invoke(this, ie, attacker);
+                    attackerEC.EnterCombat();
                 }
             }
         }

@@ -20,26 +20,53 @@ MonoBehaviour:
     Slots:
     - AllowedItems: 010000000200000003000000
       item:
-        Name: 
-        Id: -1
-        effects: []
-      selected: 0
+        Name: Quick Slash
+        Id: 8
+        Type: 1
+        InitialEffects:
+        - effect: 0
+          statusEffect: {fileID: 0}
+          effectPrefab: {fileID: 3364797645241251674, guid: b7765a248a1e3445d82f436569e14fe0, type: 3}
+          indicator: {fileID: 0}
+          IsAtSelf: 1
+          attackPercent: 100
+          knockback: 0
+          poiseBreak: 10
+          movement: 10
+          windUpTime: 0.25
+          duration: 0.1
+          windDownTime: 0
+          speedDelta: -1
+          lifetime: -1
+          velocity: 0
+          destroyOnHit: 0
+          energyDelta: 10
+          triggerNext: 0
+          recastable: 0
+          reloadDeltaCurrentWeapon: 0
+          reloadDeltaOtherWeapon: 0
+          IsFollowUp: 0
+          followUpTrigger: 0
+        FollowUpEffects: []
     - AllowedItems: 010000000200000003000000
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 010000000200000003000000
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
     - AllowedItems: 010000000200000003000000
       item:
         Name: 
         Id: -1
-        effects: []
-      selected: 0
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
   InvenotryAllowedItems: 010000000200000003000000

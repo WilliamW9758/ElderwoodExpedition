@@ -8,9 +8,14 @@ public class MeshGenerator : MonoBehaviour
     public SquareGrid squareGrid;
     public MeshFilter walls;
     public Tilemap topMap;
+    public Tilemap wallMap;
+    public Tilemap topShadowMap;
     public Tilemap groundMap;
+    public Tilemap groundGrassMap;
     public Tile[] topTiles;
+    public Tile[] wallTiles;
     public Tile[] groundTiles;
+    public Tile[] grassTiles;
     List<Vector3> vertices;
     List<int> triangles;
 
@@ -21,13 +26,18 @@ public class MeshGenerator : MonoBehaviour
     List<List<int>> outlines = new List<List<int>>();
     HashSet<int> checkedVertices = new HashSet<int>();
 
-    public void GenerateMesh(int[,] map, float squareSize)
+    public void GenerateMesh(int[,] map, float squareSize, int[,] grassMap)
     {
-        outlines.Clear();
-        checkedVertices.Clear();
-        triangleDictionary.Clear();
+        ClearMap();
+
+        int[,] treeMap = ImageProcessing.ImageProcessing.Erode(map, 2);
+        int[,] shadowMap = ImageProcessing.ImageProcessing.Dilate(map, 3);
+        grassMap = ImageProcessing.ImageProcessing.Dilate(grassMap, 2);
 
         squareGrid = new SquareGrid(map, squareSize);
+        SquareGrid treeSquareGrid = new SquareGrid(treeMap, squareSize);
+        SquareGrid shadowSquareGrid = new SquareGrid(shadowMap, squareSize);
+        SquareGrid grassSquareGrid = new SquareGrid(grassMap, squareSize);
 
         vertices = new List<Vector3>();
         triangles = new List<int>();
@@ -37,6 +47,20 @@ public class MeshGenerator : MonoBehaviour
             for (int y = 0; y < squareGrid.squares.GetLength(1) - 1; y++)
             {
                 TriangulateSquare(squareGrid.squares[x, y]);
+                wallMap.SetTile(Vector3Int.FloorToInt(squareGrid.squares[x, y].bottomLeft.position), wallTiles[squareGrid.squares[x, y].configuration]);
+                PlaceGroundTiles(map, x, y, squareGrid.squares[x, y]);
+                if (treeSquareGrid.squares[x, y].configuration != 0)
+                {
+                    topMap.SetTile(Vector3Int.FloorToInt(treeSquareGrid.squares[x, y].bottomLeft.position), topTiles[treeSquareGrid.squares[x, y].configuration]);
+                }
+                if (shadowSquareGrid.squares[x, y].configuration != 0)
+                {
+                    topShadowMap.SetTile(Vector3Int.FloorToInt(shadowSquareGrid.squares[x, y].bottomLeft.position), topTiles[shadowSquareGrid.squares[x, y].configuration]);
+                }
+                if (grassSquareGrid.squares[x, y].configuration != 0)
+                {
+                    groundGrassMap.SetTile(Vector3Int.FloorToInt(grassSquareGrid.squares[x, y].bottomLeft.position), grassTiles[grassSquareGrid.squares[x, y].configuration]);
+                }
             }
         }
 
@@ -197,12 +221,26 @@ public class MeshGenerator : MonoBehaviour
                 checkedVertices.Add(square.bottomLeft.vertexIndex);
                 break;
         }
+    }
 
-        if (square.configuration != 0)
-        {
-            topMap.SetTile(Vector3Int.FloorToInt(square.bottomLeft.position), topTiles[square.configuration]);
-            groundMap.SetTile(Vector3Int.FloorToInt(square.bottomLeft.position), groundTiles[square.configuration]);
-        }
+    void PlaceGroundTiles(int[,] map, int x, int y, Square square)
+    {
+        //switch(map[x, y])
+        //{
+        //    case 2:
+        //        groundMap.SetTile(Vector3Int.FloorToInt(square.bottomLeft.position), groundTiles[0]);
+        //        break;
+        //    case 3:
+        //        groundMap.SetTile(Vector3Int.FloorToInt(square.bottomLeft.position), groundTiles[1]);
+        //        break;
+        //    case 4:
+        //        groundMap.SetTile(Vector3Int.FloorToInt(square.bottomLeft.position), groundTiles[2]);
+        //        break;
+        //    case 5:
+        //        groundMap.SetTile(Vector3Int.FloorToInt(square.bottomLeft.position), groundTiles[3]);
+        //        break;
+        //}
+        groundMap.SetTile(Vector3Int.FloorToInt(square.bottomLeft.position), groundTiles[4]);
     }
 
     void MeshFromPoints(params Node[] points)
@@ -335,6 +373,20 @@ public class MeshGenerator : MonoBehaviour
         }
 
         return sharedTriangleCount == 1;
+    }
+
+    public void ClearMap()
+    {
+        outlines.Clear();
+        checkedVertices.Clear();
+        triangleDictionary.Clear();
+
+        Debug.Log(topMap);
+        topMap.ClearAllTiles();
+        wallMap.ClearAllTiles();
+        topShadowMap.ClearAllTiles();
+        groundMap.ClearAllTiles();
+        groundGrassMap.ClearAllTiles();
     }
 
     struct Triangle

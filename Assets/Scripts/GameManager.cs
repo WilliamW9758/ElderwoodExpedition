@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     private static Camera mainCamera;
+    private static LevelLoader levelLoader;
 
     public static Action LevelComplete;
     public static int currentLevel;
@@ -43,15 +44,26 @@ public class GameManager : MonoBehaviour
     public static KeyCode Interact { get; set; }
     public static KeyCode Pause { get; set; }
 
-    private bool levelCompleted = false;
+    private WorldGenerator worldGen;
+    private GameObject player;
+    private GameObject boss;
+
+    public bool generateMap;
+    public bool spawnEntity;
+    public bool spawnPlayer;
+    public bool spawnBoss;
+
+    public Vector3 GetPlayerLocation { get { return player.transform.position; } }
+
+    [SerializeField]
+    private ItemObject[] StartingItems;
 
     private void Awake()
     {
-        mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-
         if (Instance != null && Instance != this)
         {
-            Destroy(this);
+            Destroy(gameObject);
+            return;
         }
         else
         {
@@ -72,129 +84,164 @@ public class GameManager : MonoBehaviour
         Interact = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("BtnInteract", "E"));
         Pause = (KeyCode)Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("BtnPause", "Escape"));
 
+        worldGen = GetComponentInChildren<WorldGenerator>();
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
         currentLevel = 1;
-        currentLevelType = LevelType.Rest;
-        InitLevelPresets();
     }
 
-    private void Update()
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (!levelCompleted)
+        mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        levelLoader = GameObject.Find("LevelLoader").GetComponent<LevelLoader>();
+
+        worldGen.ClearMap();
+
+        if (scene.buildIndex == 0) // if is start
         {
-            CheckLevelComplete();
+            worldGen.GenerateMap(false);
         }
-    }
+        else if (scene.buildIndex == 1) // if is prep
+        {
+            worldGen.SpawnPlayer(new Vector3(-0.8f, 0, 0));
+            player = worldGen.player;
 
-    private void CheckLevelComplete()
-    {
-        if (currentLevelType == LevelType.Rest)
-        {
-            levelCompleted = true;
-            OnLevelComplete();
-        } else if (currentLevelType == LevelType.Combat)
-        {
-            if (GameObject.FindGameObjectsWithTag("Enemy").Length == 0)
+            WeaponController wc = player.GetComponent<WeaponController>();
+            PlayerController pc = player.GetComponent<PlayerController>();
+
+            wc.canAttack = false;
+            pc.root = true;
+
+            wc.weaponLeft.Clear();
+            wc.weaponRight.Clear();
+            pc.inventory.Clear();
+            for (int i = 0; i < pc.inventory.GetSize; i++)
             {
-                levelCompleted = true;
-                OnLevelComplete();
+                pc.inventory.GetSlots[i].SetLocked(false);
+            }
+            for (int i = 0; i < wc.weaponLeft.GetSize; i++)
+            {
+                wc.weaponLeft.GetSlots[i].SetLocked(false);
+            }
+            for (int i = 0; i < wc.weaponRight.GetSize; i++)
+            {
+                wc.weaponRight.GetSlots[i].SetLocked(false);
+            }
+
+            foreach (ItemObject item in StartingItems)
+            {
+                InventorySlot slot = player.GetComponent<PlayerController>().inventory.AddItem(item.data);
+                slot.SetLocked(true);
+            }
+        }
+        else if (scene.buildIndex == 2) // if is game
+        {
+            worldGen.GenerateMap(true); // generate world as normal
+            player = worldGen.player;
+
+            PlayerController pc = player.GetComponent<PlayerController>();
+            for (int i = 0; i < pc.inventory.GetSize; i++)
+            {
+                pc.inventory.GetSlots[i].SetLocked(false);
+            }
+        }
+        else if (scene.buildIndex == 3) // if is boss
+        {
+            worldGen.SpawnPlayer(new Vector3(0, 0, 0));
+            player = worldGen.player;
+            worldGen.SpawnBoss(new Vector3(0, 17, 0));
+            boss = worldGen.boss;
+            boss.GetComponent<EntityController>().OnEntityDestroy += OnBossDeath;
+        }
+        else if (scene.buildIndex == 4) // if is death
+        {
+            worldGen.SpawnPlayer(new Vector3(-0.8f, 0, 0));
+            player = worldGen.player;
+
+            WeaponController wc = player.GetComponent<WeaponController>();
+            PlayerController pc = player.GetComponent<PlayerController>();
+
+            wc.canAttack = false;
+            pc.root = true;
+
+            for (int i = 0; i < pc.inventory.GetSize; i++)
+            {
+                pc.inventory.GetSlots[i].SetLocked(true);
+            }
+            for (int i = 0; i < wc.weaponLeft.GetSize; i++)
+            {
+                wc.weaponLeft.GetSlots[i].SetLocked(true);
+            }
+            for (int i = 0; i < wc.weaponRight.GetSize; i++)
+            {
+                wc.weaponRight.GetSlots[i].SetLocked(true);
+            }
+        }
+        else if (scene.buildIndex == 5) // if is victory
+        {
+            worldGen.SpawnPlayer(new Vector3(-0.8f, 0, 0));
+            player = worldGen.player;
+
+            WeaponController wc = player.GetComponent<WeaponController>();
+            PlayerController pc = player.GetComponent<PlayerController>();
+
+            wc.canAttack = false;
+            pc.root = true;
+
+            for (int i = 0; i < pc.inventory.GetSize; i++)
+            {
+                pc.inventory.GetSlots[i].SetLocked(true);
+            }
+            for (int i = 0; i < wc.weaponLeft.GetSize; i++)
+            {
+                wc.weaponLeft.GetSlots[i].SetLocked(true);
+            }
+            for (int i = 0; i < wc.weaponRight.GetSize; i++)
+            {
+                wc.weaponRight.GetSlots[i].SetLocked(true);
             }
         }
     }
 
-    public void OnLevelComplete()
+    private void OnBossDeath()
     {
-        LevelComplete?.Invoke();
+        boss.GetComponent<EntityController>().OnEntityDestroy -= OnBossDeath;
         currentLevel++;
+        //levelLoader.GoToGame();
+
+        // demo version only 1 boss
+        levelLoader.GoToVictory();
     }
 
-    public void InitLevelPresets()
-    {
-        List<LevelType> level1 = new List<LevelType>();
-        level1.Add(LevelType.Rest);
-        levelPresets.Add(level1);
+    //private void Update()
+    //{
+    //    if (!levelCompleted)
+    //    {
+    //        CheckLevelComplete();
+    //    }
+    //}
 
-        List<LevelType> level2 = new List<LevelType>();
-        level2.Add(LevelType.Combat);
-        level2.Add(LevelType.Event);
-        levelPresets.Add(level2);
+    //private void CheckLevelComplete()
+    //{
+    //    if (currentLevelType == LevelType.Rest)
+    //    {
+    //        levelCompleted = true;
+    //        OnLevelComplete();
+    //    } else if (currentLevelType == LevelType.Combat)
+    //    {
+    //        if (GameObject.FindGameObjectsWithTag("Enemy").Length == 0)
+    //        {
+    //            levelCompleted = true;
+    //            OnLevelComplete();
+    //        }
+    //    }
+    //}
 
-        List<LevelType> level3 = new List<LevelType>();
-        level3.Add(LevelType.Combat);
-        level3.Add(LevelType.Event);
-        levelPresets.Add(level3);
-
-        List<LevelType> level4 = new List<LevelType>();
-        level4.Add(LevelType.Elite);
-        levelPresets.Add(level4);
-
-        List<LevelType> level5 = new List<LevelType>();
-        level5.Add(LevelType.Combat);
-        level5.Add(LevelType.Event);
-        level5.Add(LevelType.Rest);
-        levelPresets.Add(level5);
-
-        List<LevelType> level6 = new List<LevelType>();
-        level6.Add(LevelType.Combat);
-        level6.Add(LevelType.Event);
-        levelPresets.Add(level6);
-
-        List<LevelType> level7 = new List<LevelType>();
-        level7.Add(LevelType.Combat);
-        level7.Add(LevelType.Event);
-        levelPresets.Add(level7);
-
-        List<LevelType> level8 = new List<LevelType>();
-        level8.Add(LevelType.Elite);
-        levelPresets.Add(level8);
-
-        List<LevelType> level9 = new List<LevelType>();
-        level9.Add(LevelType.Combat);
-        level9.Add(LevelType.Event);
-        level9.Add(LevelType.Rest);
-        levelPresets.Add(level9);
-
-        List<LevelType> level10 = new List<LevelType>();
-        level10.Add(LevelType.Combat);
-        level10.Add(LevelType.Event);
-        levelPresets.Add(level10);
-
-        List<LevelType> level11 = new List<LevelType>();
-        level11.Add(LevelType.Combat);
-        level11.Add(LevelType.Event);
-        level11.Add(LevelType.Rest);
-        levelPresets.Add(level11);
-
-        List<LevelType> level12 = new List<LevelType>();
-        level12.Add(LevelType.Elite);
-        levelPresets.Add(level12);
-
-        List<LevelType> level13 = new List<LevelType>();
-        level13.Add(LevelType.Combat);
-        level13.Add(LevelType.Event);
-        levelPresets.Add(level13);
-
-        List<LevelType> level14 = new List<LevelType>();
-        level14.Add(LevelType.Combat);
-        level14.Add(LevelType.Event);
-        levelPresets.Add(level14);
-
-        List<LevelType> level15 = new List<LevelType>();
-        level15.Add(LevelType.Event);
-        level15.Add(LevelType.Rest);
-        levelPresets.Add(level15);
-
-        List<LevelType> level16 = new List<LevelType>();
-        level16.Add(LevelType.Boss);
-        levelPresets.Add(level16);
-    }
-
-    public static void LoadLevel()
-    {
-        if (currentLevelType == LevelType.Combat)
-        {
-            SceneManager.LoadScene("Combat", LoadSceneMode.Single);
-        }
-    }
+    //public void OnLevelComplete()
+    //{
+    //    LevelComplete?.Invoke();
+    //    currentLevel++;
+    //}
 
     public static void QuickTimeScale(float duration, float timeScale)
     {
@@ -209,7 +256,14 @@ public class GameManager : MonoBehaviour
 
     public static Vector3 GetMouseWorldPosition()
     {
-        return mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z = 10;
+        return mainCamera.ScreenToWorldPoint(mousePos);
+    }
+
+    public static void SetPlayerCanAttack(bool value)
+    {
+        Instance.player.GetComponent<WeaponController>().canAttack = value;
     }
 
     public static void PauseGame()
@@ -222,5 +276,20 @@ public class GameManager : MonoBehaviour
     {
         IsGamePaused = false;
         Time.timeScale = 1f;
+    }
+
+    public static void QuitGame()
+    {
+        Application.Quit();
+    }
+
+    public static void ToBossFight()
+    {
+        levelLoader.GoToBoss();
+    }
+
+    public static void PlayerDeath()
+    {
+        levelLoader.GoToDeath();
     }
 }

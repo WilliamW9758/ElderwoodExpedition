@@ -16,16 +16,70 @@ MonoBehaviour:
   database: {fileID: 11400000, guid: 5e4b95d5226534c57916b91eaa262cbb, type: 2}
   type: 1
   Container:
-    inventorySize: 2
+    inventorySize: 4
     Slots:
     - AllowedItems: 
       item:
-        Name: 
-        Id: -1
-        Type: 0
-        InitialEffects: []
+        Name: Forward Strike
+        Id: 4
+        Type: 1
+        InitialEffects:
+        - effect: 0
+          statusEffect: {fileID: 0}
+          effectPrefab: {fileID: 4821116065690207996, guid: a1af12ffeee424538a6793d5c6718147, type: 3}
+          indicator: {fileID: 0}
+          IsAtSelf: 1
+          attackPercent: 100
+          knockback: 5
+          poiseBreak: 10
+          movement: 20
+          windUpTime: 0
+          duration: 0.2
+          windDownTime: 0
+          speedDelta: -1
+          lifetime: -1
+          velocity: 0
+          destroyOnHit: 0
+          energyDelta: -10
+          triggerNext: 0
+          recastable: 0
+          reloadDeltaCurrentWeapon: 0
+          reloadDeltaOtherWeapon: 0
+          IsFollowUp: 0
+          followUpTrigger: 0
         FollowUpEffects: []
-      selected: 0
+      locked: 0
+    - AllowedItems: 
+      item:
+        Name: Whirlwind
+        Id: 11
+        Type: 1
+        InitialEffects:
+        - effect: 0
+          statusEffect: {fileID: 0}
+          effectPrefab: {fileID: 6366015182981958700, guid: fe249871450a44669ba1e5c98d174fec, type: 3}
+          indicator: {fileID: 7141278230132290286, guid: 8541bfaae0f4c4f90995fabd290fe0b3, type: 3}
+          IsAtSelf: 1
+          attackPercent: 150
+          knockback: 0
+          poiseBreak: 30
+          movement: 0
+          windUpTime: 0.75
+          duration: 0.333
+          windDownTime: 0
+          speedDelta: 0
+          lifetime: -1
+          velocity: 0
+          destroyOnHit: 0
+          energyDelta: -30
+          triggerNext: 0
+          recastable: 0
+          reloadDeltaCurrentWeapon: 0
+          reloadDeltaOtherWeapon: 0
+          IsFollowUp: 0
+          followUpTrigger: 0
+        FollowUpEffects: []
+      locked: 0
     - AllowedItems: 
       item:
         Name: 
@@ -33,5 +87,14 @@ MonoBehaviour:
         Type: 0
         InitialEffects: []
         FollowUpEffects: []
-      selected: 0
-  InvenotryAllowedItems: 
+      locked: 0
+    - AllowedItems: 
+      item:
+        Name: 
+        Id: -1
+        Type: 0
+        InitialEffects: []
+        FollowUpEffects: []
+      locked: 0
+  itemToAdd: {fileID: 11400000, guid: 3e54add86186747a88a5d4d99344f82c, type: 2}
+  InvenotryAllowedItems: 010000000200000003000000

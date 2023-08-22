@@ -14,11 +14,20 @@ public class WeaponInterface : InventoryInterface
     protected override void _CreateSlots(int i)
     {
         base._CreateSlots(i);
-        inventory.GetSlots[i].UpdateSelected +=
-            (active) => inventory.GetSlots[i].slotDisplay.transform.GetChild(1).gameObject.SetActive(active);
+        inventory.GetSlots[i].UpdateSelected += SetSlotActive;
     }
 
-    private void OnEnable()
+    private void SetSlotActive(InventorySlot slot, bool active)
+    {
+        slot.slotDisplay.transform.GetChild(1).gameObject.SetActive(active);
+    }
+
+    private new void Awake()
+    {
+        base.Awake();
+    }
+
+    private void Start()
     {
         wc = GameObject.FindGameObjectWithTag("Player").GetComponent<WeaponController>();
         inventory.startReload += StartReload;
@@ -29,6 +38,11 @@ public class WeaponInterface : InventoryInterface
     {
         inventory.startReload -= StartReload;
         wc.StartCast -= StartCast;
+        for (int i = 0; i < inventory.GetSlots.Count; i++)
+        {
+            inventory.GetSlots[i].OnAfterUpdate -= OnSlotUpdate;
+            inventory.GetSlots[i].SlotLockStateChange -= OnSlotUpdate;
+        }
     }
 
     private void StartReload(float seconds)

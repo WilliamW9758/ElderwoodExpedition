@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class LevelDoorController : MonoBehaviour
 {
-    public LevelType nextLevel;
+    //public LevelType nextLevel;
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.tag == "Player")
-        {
-            GameManager.currentLevelType = nextLevel;
-            GameManager.LoadLevel();
-        }
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.tag == "Player")
+    //    {
+    //        GameManager.currentLevelType = nextLevel;
+    //        GameManager.LoadLevel();
+    //    }
+    //}
 }

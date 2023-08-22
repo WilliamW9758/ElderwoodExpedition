@@ -28,7 +28,7 @@ public class HoverDetector : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private IEnumerator StartTimer()
     {
-        yield return new WaitForSeconds(timeToWait);
+        yield return new WaitForSecondsRealtime(timeToWait);
 
         ShowMessage();
     }

@@ -32,7 +32,12 @@ public class HoverUIManager : MonoBehaviour
 
     private void ShowMessage(string content, Vector2 mousePos)
     {
+        Debug.Log("HUIM Show Message");
+
         contentText.text = content;
+
+        Debug.Log(content);
+
         hoverWindow.sizeDelta = new Vector2(contentText.preferredWidth > 300 ? 300 : contentText.preferredWidth, contentText.preferredHeight);
 
         hoverWindow.gameObject.SetActive(true);

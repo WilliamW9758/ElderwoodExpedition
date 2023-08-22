@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 3364797645241251673}
   - component: {fileID: 3364797645241251672}
   - component: {fileID: 3364797645241251675}
-  - component: {fileID: 1471550474}
   - component: {fileID: 9111950165072941137}
+  - component: {fileID: 8582247164742153259}
   m_Layer: 0
   m_Name: r2l
   m_TagString: Attack
@@ -108,22 +108,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!70 &1471550474
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3364797645241251674}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.017116547, y: 0.9548061}
-  m_Size: {x: 1.4068737, y: 1.70403}
-  m_Direction: 0
 --- !u!114 &9111950165072941137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,9 +128,36 @@ MonoBehaviour:
   lifetime: 0
   velocity: {x: 0, y: 0}
   infusedElement: 0
+  destroyOnHit: 0
   SSAttack: 0
   SSCR: 0
   SSCD: 0
   SSMaxHealth: 0
   SSHealth: 0
   attacker: {fileID: 0}
+--- !u!61 &8582247164742153259
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3364797645241251674}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.8903335}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 2, y: 4}
+    newSize: {x: 2.56, y: 1.28}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.4, y: 1.7806671}
+  m_EdgeRadius: 0

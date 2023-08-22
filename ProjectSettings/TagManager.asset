@@ -12,6 +12,8 @@ TagManager:
   - MainCanvas
   - GameManager
   - Decor
+  - EnemyHolder
+  - Chest
   layers:
   - Default
   - TransparentFX
@@ -19,9 +21,9 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Environment
+  - Entity
+  - IgnoreEntityCollision
   - 
   - 
   - 
