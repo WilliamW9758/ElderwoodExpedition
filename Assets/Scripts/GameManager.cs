@@ -200,6 +200,26 @@ public class GameManager : MonoBehaviour
             {
                 wc.weaponRight.GetSlots[i].SetLocked(true);
             }
+        } else
+        {
+            worldGen.SpawnPlayer(new Vector3(0, 0, 0));
+            player = worldGen.player;
+
+            WeaponController wc = player.GetComponent<WeaponController>();
+            PlayerController pc = player.GetComponent<PlayerController>();
+
+            for (int i = 0; i < pc.inventory.GetSize; i++)
+            {
+                pc.inventory.GetSlots[i].SetLocked(false);
+            }
+            for (int i = 0; i < wc.weaponLeft.GetSize; i++)
+            {
+                wc.weaponLeft.GetSlots[i].SetLocked(false);
+            }
+            for (int i = 0; i < wc.weaponRight.GetSize; i++)
+            {
+                wc.weaponRight.GetSlots[i].SetLocked(false);
+            }
         }
     }
 

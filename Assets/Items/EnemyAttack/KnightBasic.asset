@@ -10,33 +10,32 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59f6c6b00854e417aa10ee23ebca7e79, type: 3}
-  m_Name: Whirlwind
+  m_Name: KnightBasic
   m_EditorClassIdentifier: 
-  uiDisplay: {fileID: 21300000, guid: e3b56c896cccd460da3c0557d85b523e, type: 3}
+  uiDisplay: {fileID: 3536865724434752150, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
   description: 
   data:
-    Name: Whirlwind
-    Id: 11
-    Type: 1
+    Name: Knight Slash
+    Id: -1
+    Type: 0
     InitialEffects:
     - effect: 0
       statusEffect: {fileID: 0}
-      effectPrefab: {fileID: 6366015182981958700, guid: fe249871450a44669ba1e5c98d174fec, type: 3}
-      indicator: {fileID: 7141278230132290286, guid: 8541bfaae0f4c4f90995fabd290fe0b3, type: 3}
-      scale: {x: 1, y: 1, z: 1}
-      IsAtSelf: 1
-      attackPercent: 150
+      effectPrefab: {fileID: 0}
+      indicator: {fileID: 0}
+      IsAtSelf: 0
+      attackPercent: 0
       knockback: 0
-      poiseBreak: 30
+      poiseBreak: 0
       movement: 0
-      windUpTime: 0.75
-      duration: 0.333
+      windUpTime: 0
+      duration: 0
       windDownTime: 0
       speedDelta: 0
-      lifetime: -1
+      lifetime: 0
       velocity: 0
       destroyOnHit: 0
-      energyDelta: -30
+      energyDelta: 0
       triggerNext: 0
       recastable: 0
       reloadDeltaCurrentWeapon: 0

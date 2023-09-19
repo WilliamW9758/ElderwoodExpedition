@@ -85,6 +85,9 @@ public class ItemEffect
     public GameObject indicator;
     [ShowIf("effect", Effect.SpawnPrefab)]
     [AllowNesting]
+    public Vector3 scale;
+    [ShowIf("effect", Effect.SpawnPrefab)]
+    [AllowNesting]
     public bool IsAtSelf = true;
     [ShowIf("effect", Effect.SpawnPrefab)]
     [AllowNesting]

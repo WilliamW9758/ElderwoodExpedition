@@ -153,23 +153,23 @@ public class EntityController : MonoBehaviour
         switch (type)
         {
             case (Elements.physical):
-                ShowFloatingText(damage.ToString(), Color.white, crit : _crit);
+                ShowFloatingText(((int)(damage * (1f - damageReduction))).ToString(), Color.white, crit : _crit);
                 break;
             case (Elements.fire):
                 Debug.Log("Showing Fire text");
-                ShowFloatingText(damage.ToString(), new Color(1, 0.15f, 0.15f), crit: _crit);
+                ShowFloatingText(((int)(damage * (1f - damageReduction))).ToString(), new Color(1, 0.15f, 0.15f), crit: _crit);
                 break;
             case (Elements.ice):
-                ShowFloatingText(damage.ToString(), new Color(0.5f, 0.94f, 1), crit: _crit);
+                ShowFloatingText(((int)(damage * (1f - damageReduction))).ToString(), new Color(0.5f, 0.94f, 1), crit: _crit);
                 break;
             case (Elements.electric):
-                ShowFloatingText(damage.ToString(), new Color(0.84f, 0.17f, 0.9f), crit: _crit);
+                ShowFloatingText(((int)(damage * (1f - damageReduction))).ToString(), new Color(0.84f, 0.17f, 0.9f), crit: _crit);
                 break;
             case (Elements.light):
-                ShowFloatingText(damage.ToString(), new Color(1, 0.9f, 0.4f), crit: _crit);
+                ShowFloatingText(((int)(damage * (1f - damageReduction))).ToString(), new Color(1, 0.9f, 0.4f), crit: _crit);
                 break;
             case (Elements.dark):
-                ShowFloatingText(damage.ToString(), new Color(0.2f, 0.17f, 0.9f), crit : _crit);
+                ShowFloatingText(((int)(damage * (1f - damageReduction))).ToString(), new Color(0.2f, 0.17f, 0.9f), crit : _crit);
                 break;
         }
         //animator.SetTrigger("getHit");

@@ -161,6 +161,22 @@ public class InventoryObject : ScriptableObject
     {
         AddItem(itemToAdd.data);
     }
+    [Button]
+    private void ManualUpdateItems()
+    {
+        for (int i = 0; i < GetSlots.Count; i++)
+        {
+            Debug.Log(i);
+            Debug.Log(GetSlots[i].item.Id);
+            if (GetSlots[i].item.Id >= 0)
+            {
+                int id = GetSlots[i].item.Id;
+                Item data = database.ItemObjects[id].data;
+                GetSlots[i].UpdateSlot(data);
+            }
+                
+        }
+    }
 }
 [System.Serializable]
 public class Inventory: ISerializationCallbackReceiver

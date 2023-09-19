@@ -1876,7 +1876,7 @@ GameObject:
   - component: {fileID: 1335408558}
   m_Layer: 0
   m_Name: TheKnight
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1893,13 +1893,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35ff852e9252a4763825f97457eb78aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponLeft: {fileID: 0}
-  weaponRight: {fileID: 0}
-  itemWorldPrefab: {fileID: 0}
+  weaponLeft: {fileID: 11400000, guid: 59d1b6163613b4bc7a7cd109932ad810, type: 2}
+  weaponRight: {fileID: 11400000, guid: 6b31c708a94984316aee4bce8266032e, type: 2}
+  itemWorldPrefab: {fileID: 8568357219672015854, guid: 275f6d4ea59094a9db8aa36d1d0cb391, type: 3}
   weaponPtrLeft: 0
   weaponPtrRight: 0
-  defaultReloadCDLeft: 0
-  defaultReloadCDRight: 0
+  defaultReloadCDLeft: 2
+  defaultReloadCDRight: 2
   cumulatedReloadCDLeft: 0
   cumulatedReloadCDRight: 0
   reloadingLeft: 0
@@ -1925,10 +1925,10 @@ MonoBehaviour:
   speed: 2
   speedMod: 0
   rotLerpSpeed: 2
-  maxHealth: 200
-  health: 200
+  maxHealth: 1000
+  health: 1000
   maxEnergy: 100
-  energy: 100
+  energy: 0
   energyRegen: 5
   attack: 10
   attackFlatMod: 0
@@ -1936,7 +1936,7 @@ MonoBehaviour:
   critRate: 0
   critDamage: 0
   damageReduction: 0.5
-  abilityHaste: -1
+  abilityHaste: 0
   controlLock: 0
   invincible: 0
   ghost: 0
@@ -1952,8 +1952,8 @@ MonoBehaviour:
   pushVelocity: {x: 0, y: 0}
   canvas: {fileID: 0}
   healthFill: {fileID: 0}
-  floatingTextPrefab: {fileID: 0}
-  floatingTextCritPrefab: {fileID: 0}
+  floatingTextPrefab: {fileID: 3132772881082065344, guid: a6914bb8f8f204416be948c5b1835085, type: 3}
+  floatingTextCritPrefab: {fileID: 3132772881082065344, guid: 113a9803bf6724102810789fe820a08d, type: 3}
   buffSlotPrefab: {fileID: 0}
   buffDisplay: {fileID: 0}
   NoIcon: {fileID: 21300000, guid: d46556ec6195e43c09d75312c86c2236, type: 3}
@@ -1963,8 +1963,8 @@ MonoBehaviour:
   state: 0
   stunAmount: 0
   stunCount: 0
-  attackRadius: 0
-  aggroRadius: 0
+  attackRadius: 4
+  aggroRadius: 4
   originalPos: {x: 0, y: 0}
   player: {fileID: 0}
   relativePos: {x: 0, y: 0}
@@ -2069,7 +2069,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1335408557}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: -2.02, z: 0}
+  m_LocalPosition: {x: 0.93, y: -6.93, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

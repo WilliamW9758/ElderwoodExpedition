@@ -10,33 +10,33 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59f6c6b00854e417aa10ee23ebca7e79, type: 3}
-  m_Name: Whirlwind
+  m_Name: KnightR
   m_EditorClassIdentifier: 
-  uiDisplay: {fileID: 21300000, guid: e3b56c896cccd460da3c0557d85b523e, type: 3}
-  description: 
+  uiDisplay: {fileID: 3536865724434752150, guid: d07b803c54ae9fb4ebfc1e8a13b12f4c, type: 3}
+  description: The Knight Boss Ultimate
   data:
-    Name: Whirlwind
-    Id: 11
+    Name: Royal Impact
+    Id: 19
     Type: 1
     InitialEffects:
     - effect: 0
       statusEffect: {fileID: 0}
       effectPrefab: {fileID: 6366015182981958700, guid: fe249871450a44669ba1e5c98d174fec, type: 3}
       indicator: {fileID: 7141278230132290286, guid: 8541bfaae0f4c4f90995fabd290fe0b3, type: 3}
-      scale: {x: 1, y: 1, z: 1}
+      scale: {x: 3, y: 3, z: 1}
       IsAtSelf: 1
-      attackPercent: 150
-      knockback: 0
-      poiseBreak: 30
+      attackPercent: 200
+      knockback: 20
+      poiseBreak: 0
       movement: 0
-      windUpTime: 0.75
+      windUpTime: 1
       duration: 0.333
-      windDownTime: 0
-      speedDelta: 0
+      windDownTime: 2
+      speedDelta: -0.75
       lifetime: -1
       velocity: 0
       destroyOnHit: 0
-      energyDelta: -30
+      energyDelta: -100
       triggerNext: 0
       recastable: 0
       reloadDeltaCurrentWeapon: 0

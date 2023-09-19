@@ -119,6 +119,7 @@ public class WeaponController : MonoBehaviour
                 GameObject effect = Instantiate(ie.effectPrefab, effectLocation, transform.rotation, effectParent);
                 //Debug.Log("Instantiate effect: " + effect.name);
                 effect.SetActive(false);
+                effect.transform.localScale = ie.scale;
                 EffectManager em = effect.GetComponent<EffectManager>();
                 em.attacker = gameObject;
                 em.attackPercent = ie.attackPercent;
@@ -149,7 +150,15 @@ public class WeaponController : MonoBehaviour
                     if (effect.GetComponent<BoxCollider2D>())
                     {
                         BoxCollider2D bc = effect.GetComponent<BoxCollider2D>();
-                        indicator.transform.localScale = new Vector3(bc.size.x / 2f, bc.size.y / 2f, 1);
+                        indicator.transform.localScale =
+                            new Vector3(bc.size.x / 2f * ie.scale.x,
+                            bc.size.y / 2f * ie.scale.y, 1);
+                    } else if (effect.GetComponent<CircleCollider2D>())
+                    {
+                        CircleCollider2D cc = effect.GetComponent<CircleCollider2D>();
+                        indicator.transform.localScale =
+                            new Vector3(cc.radius * ie.scale.x,
+                            cc.radius * ie.scale.y, 1);
                     }
                     Animator IndicatorAnim;
                     indicator.TryGetComponent<Animator>(out IndicatorAnim);
@@ -203,6 +212,7 @@ public class WeaponController : MonoBehaviour
             Transform effectParent = ie.IsAtSelf ? attacker.transform : null;
             GameObject effect = Instantiate(ie.effectPrefab, effectLocation, attacker.transform.rotation, effectParent);
             //Debug.Log("Instantiate followup effect: " + effect.name);
+            effect.transform.localScale = ie.scale;
             EffectManager em = effect.GetComponent<EffectManager>();
             em.attacker = gameObject;
             em.attackPercent = ie.attackPercent;
@@ -229,7 +239,16 @@ public class WeaponController : MonoBehaviour
                 if (effect.GetComponent<BoxCollider2D>())
                 {
                     BoxCollider2D bc = effect.GetComponent<BoxCollider2D>();
-                    indicator.transform.localScale = new Vector3(bc.size.x / 2f, bc.size.y / 2f, 1);
+                    indicator.transform.localScale =
+                        new Vector3(bc.size.x / 2f * ie.scale.x,
+                        bc.size.y / 2f * ie.scale.y, 1);
+                }
+                else if (effect.GetComponent<CircleCollider2D>())
+                {
+                    CircleCollider2D cc = effect.GetComponent<CircleCollider2D>();
+                    indicator.transform.localScale =
+                        new Vector3(cc.radius * ie.scale.x,
+                        cc.radius * ie.scale.y, 1);
                 }
                 Animator IndicatorAnim;
                 indicator.TryGetComponent<Animator>(out IndicatorAnim);
@@ -333,7 +352,7 @@ public class WeaponController : MonoBehaviour
                 tempReloadR += ie.reloadDeltaOtherWeapon;
             }
         }
-        if (ec.energy > -totalEnergyDelta)
+        if (ec.energy >= -totalEnergyDelta)
         {
             cumulatedReloadCDLeft += tempReloadL;
             cumulatedReloadCDRight += tempReloadR;
@@ -369,7 +388,7 @@ public class WeaponController : MonoBehaviour
                 tempReloadL += ie.reloadDeltaOtherWeapon;
             }
         }
-        if (ec.energy > -totalEnergyDelta)
+        if (ec.energy >= -totalEnergyDelta)
         {
             cumulatedReloadCDLeft += tempReloadL;
             cumulatedReloadCDRight += tempReloadR;

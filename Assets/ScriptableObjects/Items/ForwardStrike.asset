@@ -22,6 +22,8 @@ MonoBehaviour:
     - effect: 0
       statusEffect: {fileID: 0}
       effectPrefab: {fileID: 4821116065690207996, guid: a1af12ffeee424538a6793d5c6718147, type: 3}
+      indicator: {fileID: 0}
+      scale: {x: 1, y: 1, z: 1}
       IsAtSelf: 1
       attackPercent: 100
       knockback: 5

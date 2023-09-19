@@ -10,38 +10,38 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8fbf2028e153e4e4f87a51a45b3c64e8, type: 3}
-  m_Name: TestL
+  m_Name: KnightL
   m_EditorClassIdentifier: 
-  savePath: /TestL.asset
+  savePath: 
   database: {fileID: 11400000, guid: 5e4b95d5226534c57916b91eaa262cbb, type: 2}
-  type: 1
+  type: 0
   Container:
-    inventorySize: 4
+    inventorySize: 2
     Slots:
     - AllowedItems: 
       item:
-        Name: Quick Slash
-        Id: 8
+        Name: Knight Slash
+        Id: 18
         Type: 1
         InitialEffects:
         - effect: 0
           statusEffect: {fileID: 0}
           effectPrefab: {fileID: 3364797645241251674, guid: b7765a248a1e3445d82f436569e14fe0, type: 3}
           indicator: {fileID: 8479146459356465897, guid: a0893b9eea2b942e0bb5cd3ca8bcfd7b, type: 3}
-          scale: {x: 1, y: 1, z: 1}
+          scale: {x: 2, y: 3, z: 1}
           IsAtSelf: 1
           attackPercent: 100
-          knockback: 0
-          poiseBreak: 10
-          movement: 10
-          windUpTime: 0.25
+          knockback: 10
+          poiseBreak: 0
+          movement: 5
+          windUpTime: 1
           duration: 0.1
-          windDownTime: 0
+          windDownTime: 1
           speedDelta: -1
           lifetime: -1
           velocity: 0
           destroyOnHit: 0
-          energyDelta: 10
+          energyDelta: 0
           triggerNext: 0
           recastable: 0
           reloadDeltaCurrentWeapon: 0
@@ -51,28 +51,28 @@ MonoBehaviour:
         FollowUpEffects: []
     - AllowedItems: 
       item:
-        Name: Lateral Slash
-        Id: 6
+        Name: Mighty Swing
+        Id: 20
         Type: 1
         InitialEffects:
         - effect: 0
           statusEffect: {fileID: 0}
           effectPrefab: {fileID: 1487303956782587702, guid: 49abdfdd638244914b3c4f6b7acd3bb1, type: 3}
           indicator: {fileID: 8479146459356465897, guid: a0893b9eea2b942e0bb5cd3ca8bcfd7b, type: 3}
-          scale: {x: 1, y: 1, z: 1}
+          scale: {x: 3, y: 2, z: 1}
           IsAtSelf: 1
           attackPercent: 150
-          knockback: 10
-          poiseBreak: 20
+          knockback: 20
+          poiseBreak: 0
           movement: 5
-          windUpTime: 0.5
+          windUpTime: 2
           duration: 0.2
-          windDownTime: 0
+          windDownTime: 2
           speedDelta: -1
           lifetime: -1
           velocity: 0
           destroyOnHit: 0
-          energyDelta: 20
+          energyDelta: 0
           triggerNext: 0
           recastable: 0
           reloadDeltaCurrentWeapon: 0
@@ -80,19 +80,5 @@ MonoBehaviour:
           IsFollowUp: 0
           followUpTrigger: 0
         FollowUpEffects: []
-    - AllowedItems: 
-      item:
-        Name: 
-        Id: -1
-        Type: 0
-        InitialEffects: []
-        FollowUpEffects: []
-    - AllowedItems: 
-      item:
-        Name: 
-        Id: -1
-        Type: 0
-        InitialEffects: []
-        FollowUpEffects: []
-  itemToAdd: {fileID: 11400000, guid: b109b391a235841a684b904d6bcc1002, type: 2}
-  InvenotryAllowedItems: 010000000200000003000000
+  itemToAdd: {fileID: 11400000, guid: a500d2b51cbc749c3bebea0fdb3dbc37, type: 2}
+  InvenotryAllowedItems: 
