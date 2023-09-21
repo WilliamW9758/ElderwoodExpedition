@@ -3,8 +3,8 @@
 2D Top-down action rogue-like
 ## Platform
 Unity (Windows & MacOS), easily portable to mobile
-## Introduction
-The key feature of Elderwood Expedition is its customizable combo system. In most games, one button usually corresponds to one ability or a series of predetermined moves; however, in this game, abilities (called runes) are like items that can be placed into timeline-like slots, where each click of the button will activate one tune, going from top to bottom.
+## Key Game Feature
+The key feature of Elderwood Expedition is its customizable combo system. In most games, one button usually corresponds to one ability or a series of predetermined moves; however, in this game, abilities (called runes) are like items that can be placed into timeline-like slots, where each click of the button will activate one tune, going from top to bottom. There are two weapon timelines. The left one, which has more slots and faster reloads, corresponds to the left click, or primary attack. The right one has fewer slots, slower reload, and corresponds to the right click, or secondary attacks. This allows a balance of commonly used attacks, such as quick slash, vs. situational attacks, such as parry or large spells that cost energy to cast. 
 
 ![Customizable Combo Demo](https://github.com/WilliamW9758/ElderwoodExpedition/blob/main/DemoMedia/AttackDemo.gif)
 This way, the game frontloads a lot of the strategy to the planning phase before the battle, requiring the player to adapt and plan out their series of actions. For example, should I put the parry rune at the first slot so I initiate with an almost certain success parry, or in the middle of the pack so I can adapt my pace during battle, or at the end so I can ensure a safe reload if I parry successfully.
@@ -15,3 +15,4 @@ To implement a flexible inventory system that allows moving abilities around and
 ![Enemy Weapon Demo](https://github.com/WilliamW9758/ElderwoodExpedition/blob/main/DemoMedia/WeaponDemo.png)
 ### Randomly Generated Map
 I also implemented a randomly generated map using the marching cubes algorithm. It can reliably generate organic cave and forest systems. The game first generates a field of random noises, and then a smoothing algorithm similar to the game of life is run for a few iterations. The system then uses flood fill to identify independent rooms and make connections between them to ensure the whole map is explorable. Finally, the game generates the player spawn location, boss location, enemy groups, chests, and events. 
+![Map Generation Demo](https://github.com/WilliamW9758/ElderwoodExpedition/blob/main/DemoMedia/MapGenDemo.gif)
